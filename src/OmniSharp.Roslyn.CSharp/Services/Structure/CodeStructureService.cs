@@ -40,6 +40,7 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
                 return new CodeStructureResponse { Elements = Array.Empty<CodeElement>() };
             }
 
+            // #startup 4 get CodeStructure
             var elements = await GetCodeElementsAsync(document);
 
             var response = new CodeStructureResponse

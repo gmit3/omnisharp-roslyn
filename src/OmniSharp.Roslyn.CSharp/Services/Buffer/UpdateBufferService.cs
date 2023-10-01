@@ -19,6 +19,7 @@ namespace OmniSharp.Roslyn.CSharp.Services.Buffer
 
         public async Task<object> Handle(UpdateBufferRequest request)
         {
+            // #update_buffer
             await _workspace.BufferManager.UpdateBufferAsync(request);
             return true;
         }

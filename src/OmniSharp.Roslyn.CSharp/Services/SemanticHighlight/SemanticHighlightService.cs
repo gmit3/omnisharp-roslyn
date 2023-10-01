@@ -27,6 +27,7 @@ namespace OmniSharp.Roslyn.CSharp.Services.SemanticHighlight
 
         public async Task<SemanticHighlightResponse> Handle(SemanticHighlightRequest request)
         {
+            // #startup 7 get semantic highlighting
             var document = _workspace.GetDocuments(request.FileName).FirstOrDefault();
 
             if (document == null)

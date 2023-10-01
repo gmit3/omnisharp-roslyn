@@ -281,6 +281,7 @@ namespace OmniSharp
 
         internal DocumentId AddDocument(DocumentId documentId, Project project, string filePath, TextLoader loader, SourceCodeKind sourceCodeKind = SourceCodeKind.Regular)
         {
+            // #startup 3 add document (internal)
             var basePath = Path.GetDirectoryName(project.FilePath);
             var fullPath = Path.GetDirectoryName(filePath);
 

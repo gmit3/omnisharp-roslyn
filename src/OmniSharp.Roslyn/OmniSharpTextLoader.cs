@@ -28,6 +28,7 @@ namespace OmniSharp
 
         public override Task<TextAndVersion> LoadTextAndVersionAsync(LoadTextOptions options, CancellationToken cancellationToken)
         {
+            // #load_text
             var prevLastWriteTime = File.GetLastWriteTimeUtc(_filePath);
 
             TextAndVersion textAndVersion;

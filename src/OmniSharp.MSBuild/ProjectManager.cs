@@ -476,6 +476,7 @@ namespace OmniSharp.MSBuild
                 return;
             }
 
+            // #startup 1
             // for other update triggers, perform a full check of all options
             UpdateSourceFiles(project, projectFileInfo.SourceFiles);
             UpdateParseOptions(project, projectFileInfo.LanguageVersion, projectFileInfo.PreprocessorSymbolNames, !string.IsNullOrWhiteSpace(projectFileInfo.DocumentationFile));
@@ -686,6 +687,7 @@ namespace OmniSharp.MSBuild
                     continue;
                 }
 
+                // #startup 2 adding documents
                 _workspace.AddDocument(project, sourceFile);
             }
 

@@ -54,6 +54,7 @@ internal class InlayHintService :
             return InlayHintResponse.None;
         }
 
+        // #startup 5 get inlay hints!!!
         var sourceText = await document.GetTextAsync();
         var mappedSpan = sourceText.GetSpanFromRange(request.Location.Range);
 
