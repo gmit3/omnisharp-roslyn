@@ -59,3 +59,4 @@ launchSettings.json
 .idea/
 test-assets/**/nugets
 *.binlog
+/vscodelauncher/x64/Debug

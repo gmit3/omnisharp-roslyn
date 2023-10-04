@@ -126,5 +126,36 @@ namespace OmniSharp.Roslyn
             }
             return ret;
         }
+
+        public int? OriginalToModifiedIndex(int index)
+        {
+            var oc = FindOriginalChunk(index);
+            if (!oc.HasValue)
+                return null;
+            var (chunk, index_within_chunk) = oc.Value;
+
+            Debug.Assert(chunk is OriginalTextChunk);
+            if (chunk is not OriginalTextChunk)
+                return null;    // at the moment ModifiedTextChunks are not supported
+
+            Debug.Assert(chunk.modified_span.Contains(chunk.modified_span.Start + index_within_chunk));
+            return chunk.modified_span.Start + index_within_chunk;
+        }
+
+        public int? ModifiedToOriginalIndex(int index)
+        {
+            var oc = FindModifiedChunk(index);
+            if(!oc.HasValue)
+                return null;
+            var (chunk, index_within_chunk) = oc.Value;
+
+            Debug.Assert(chunk is OriginalTextChunk);
+            if(chunk is not OriginalTextChunk)
+                return null;    // at the moment ModifiedTextChunks are not supported
+
+            Debug.Assert(chunk.original_span.Contains(chunk.original_span.Start + index_within_chunk));
+            return chunk.original_span.Start + index_within_chunk;
+        }
+
     }
 }
