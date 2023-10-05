@@ -597,5 +597,22 @@ namespace OmniSharp
 
             base.ApplyProjectChanges(projectChanges);
         }
+
+        protected new void OnDocumentAdded(DocumentInfo documentInfo)
+        {
+            base.OnDocumentAdded(documentInfo);
+            EvolveUI.OnDocumentAdded(CurrentSolution?.GetDocument(documentInfo?.Id ?? null) ?? null);
+        }
+        protected override void OnDocumentClosing(DocumentId documentId)
+        {
+            EvolveUI.OnDocumentClosing(documentId);
+            base.OnDocumentClosing(documentId);
+        }
+        protected override void OnDocumentTextChanged(Document document)
+        {
+            base.OnDocumentTextChanged(document);
+            EvolveUI.OnDocumentTextChanged(document);
+        }
+
     }
 }

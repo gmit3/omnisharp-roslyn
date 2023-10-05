@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using OmniSharp.Roslyn.Utilities;
 // ReSharper disable InconsistentNaming
@@ -10,6 +11,8 @@ namespace OmniSharp.Roslyn
 {
     internal class EvolveUIMapper
     {
+        private readonly WeakReference<Document> wdocument;
+
         private SourceText original_source = null;
         private SourceText modified_source = null;
         private string original_string => original_source.ToString();
@@ -41,12 +44,34 @@ namespace OmniSharp.Roslyn
         private readonly List<Chunk> chunks = new();
 
 
-        public EvolveUIMapper(SourceText original_source)
+        public EvolveUIMapper(Document document)
         {
-            this.modified_source = this.original_source = original_source;
-            chunks.Add(new OriginalTextChunk());
-            chunks[0].modified_span = chunks[0].original_span = new TextSpan(0, original_string.Length);
+            Debug.Assert(document != null);
+            if (document == null)
+                throw new ArgumentNullException(nameof(document));
+
+            wdocument = new(document);
         }
+
+        public void TextChanged()
+        {
+            if (wdocument.TryGetTarget(out var document))
+            {
+                var source_text = document.GetTextAsync().Result;
+                Debug.Assert(source_text != null);
+                if(source_text != null)
+                {
+                    this.modified_source = this.original_source = source_text;
+                    chunks.Add(new OriginalTextChunk());
+                    chunks[0].modified_span = chunks[0].original_span = new TextSpan(0, original_string.Length);
+
+                    ProcessSource();
+                }
+            }
+        }
+
+        private void ProcessSource()
+        {}
 
         public (int, int)? FindChunkIndex(int index, Func<Chunk, TextSpan> GetTextSpan)
         {
