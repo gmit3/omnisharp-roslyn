@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Composition;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -39,6 +40,8 @@ namespace OmniSharp.Roslyn.CSharp.Services.SemanticHighlight
 
             var project = document.Project.Name;
 
+            Debug.Assert(request.VersionedText == null); // #EVOLVEUI support if not null!
+
             var highlightDocument = request.VersionedText != null
                 ? document.WithText(SourceText.From(request.VersionedText))
                 : document;
@@ -65,12 +68,31 @@ namespace OmniSharp.Roslyn.CSharp.Services.SemanticHighlight
                 textSpan = new TextSpan(0, text.Length);
             }
 
-            results.AddRange((await Classifier.GetClassifiedSpansAsync(highlightDocument, textSpan))
-                .Select(span => new ClassifiedResult()
+            bool is_evolveui = EvolveUI.ShouldProcess(document);
+            var mapper = is_evolveui ? EvolveUI.GetMapper(document) : null;
+            if(!is_evolveui || mapper == null)
+            {
+                results.AddRange((await Classifier.GetClassifiedSpansAsync(highlightDocument, textSpan))
+                    .Select(span => new ClassifiedResult() {
+                        Span = span,
+                        Lines = text.Lines,
+                    }));
+            }
+            else
+            {
+                foreach (var cspan in await Classifier.GetClassifiedSpansAsync(highlightDocument, textSpan))
                 {
-                    Span = span,
-                    Lines = text.Lines,
-                }));
+                    TextSpan? span = mapper.ConvertModifiedTextSpanToOriginal(cspan.TextSpan);
+                    if (!span.HasValue)
+                        continue;
+
+                    results.Add(new ClassifiedResult()
+                    {
+                        Span = new ClassifiedSpan(cspan.ClassificationType, span.Value),
+                        Lines = mapper.original_source.Lines,
+                    });
+                }
+            }
 
             return new SemanticHighlightResponse()
             {
