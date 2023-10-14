@@ -247,7 +247,7 @@ namespace OmniSharp.LanguageServerProtocol
                         .Distinct()
                         .SelectMany(z =>
                         {
-                            if (x.Key == LanguageNames.CSharp && z == ".cs")
+                            if (x.Key == LanguageNames.CSharp && (z == ".cs" || z == ".ui"))
                             {
                                 return new[]
                                 {

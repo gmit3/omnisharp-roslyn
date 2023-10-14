@@ -49,7 +49,7 @@ namespace OmniSharp.MSBuild
         private string _solutionFileOrRootPath;
         public string Key { get; } = "MsBuild";
         public string Language { get; } = LanguageNames.CSharp;
-        public IEnumerable<string> Extensions { get; } = new[] { ".cs" };
+        public IEnumerable<string> Extensions { get; } = new[] { ".cs", ".ui" };
         public bool EnabledByDefault { get; } = true;
         public bool Initialized { get; private set; }
 

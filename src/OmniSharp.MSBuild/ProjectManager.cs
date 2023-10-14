@@ -299,6 +299,7 @@ namespace OmniSharp.MSBuild
             }
 
             _fileSystemWatcher.Watch(".cs", _onDirectoryFileChanged);
+            _fileSystemWatcher.Watch(".ui", _onDirectoryFileChanged);
         }
 
         private (ProjectFileInfo, ProjectLoadedEventArgs) LoadProject(string projectFilePath, ProjectIdInfo idInfo)
@@ -714,7 +715,7 @@ namespace OmniSharp.MSBuild
                 if (changeType == FileChangeType.Unspecified || changeType == FileChangeType.Create || changeType == FileChangeType.Change)
                 {
                     // Only add cs files. Also, make sure the path is a file, and not a directory name that happens to end in ".cs"
-                    if (string.Equals(Path.GetExtension(path), ".cs", StringComparison.CurrentCultureIgnoreCase) && File.Exists(path))
+                    if ((string.Equals(Path.GetExtension(path), ".cs", StringComparison.CurrentCultureIgnoreCase) || string.Equals(Path.GetExtension(path), ".ui", StringComparison.CurrentCultureIgnoreCase)) && File.Exists(path))
                     {
                         // Use the buffer manager to add the new file to the appropriate projects
                         // Hosts that don't pass the FileChangeType may wind up updating the buffer twice

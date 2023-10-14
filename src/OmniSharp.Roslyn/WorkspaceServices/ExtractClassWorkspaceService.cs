@@ -29,6 +29,7 @@ namespace OmniSharp
 
             var memberAnalysisResults = symbolsToUse.Select(m => new OmniSharpExtractClassMemberAnalysisResult(m, makeAbstract: false)).ToImmutableArray();
             const string name = "NewBaseType";
+            // #TODO: maybe .ui?
             return Task.FromResult(new OmniSharpExtractClassOptions($"{name}.cs", name, true, memberAnalysisResults));
         }
     }

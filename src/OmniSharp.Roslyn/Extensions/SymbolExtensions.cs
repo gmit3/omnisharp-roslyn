@@ -292,6 +292,7 @@ namespace OmniSharp.Extensions
 
         internal static string GetFilePathForExternalSymbol(this ISymbol symbol, Project project)
         {
+            // #TODO: maybe .ui?
             var topLevelSymbol = symbol.GetTopLevelContainingNamedType();
             return $"$metadata$/Project/{Folderize(project.Name)}/Assembly/{Folderize(topLevelSymbol.ContainingAssembly.Name)}/Symbol/{Folderize(GetTypeDisplayString(topLevelSymbol))}.cs".Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
         }

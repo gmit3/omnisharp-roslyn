@@ -18,6 +18,7 @@ namespace OmniSharp
 
         public Task<OmniSharpExtractInterfaceOptionsResult> GetExtractInterfaceOptionsAsync(List<ISymbol> extractableMembers, string defaultInterfaceName)
         {
+            // #TODO: maybe .ui?
             return Task.FromResult(new OmniSharpExtractInterfaceOptionsResult(
                 isCancelled: false,
                 extractableMembers.ToImmutableArray(),
