@@ -1,4 +1,5 @@
-﻿using System.Composition;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,10 +59,14 @@ namespace OmniSharp.Roslyn.CSharp.Services
                 return response;
             }
 
-            var sourceText = await document.GetTextAsync();
-            var position = sourceText.GetTextPosition(request);
+            int? position = EvolveUI.ConvertOriginalLineColumnToMappedIndex(document, request.Line, request.Column);
+            if(!position.HasValue)
+            {
+                var sourceText = await document.GetTextAsync();
+                position = sourceText.GetTextPosition(request);
+            }
 
-            var quickInfo = await quickInfoService.GetQuickInfoAsync(document, position);
+            var quickInfo = await quickInfoService.GetQuickInfoAsync(document, position.Value);
             if (quickInfo is null)
             {
                 _logger?.LogTrace($"No QuickInfo found for {document.FilePath}:{request.Line},{request.Column}");
