@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using Document = Microsoft.CodeAnalysis.Document;
 
 namespace OmniSharp.Roslyn
@@ -14,18 +17,44 @@ namespace OmniSharp.Roslyn
     {
         private static readonly Dictionary<DocumentId, EvolveUIMapper> _mappers = new();
 
+        public static bool ShouldProcess(string filepath) => filepath?.EndsWith(".ui", StringComparison.CurrentCultureIgnoreCase) ?? false;
+        public static bool ShouldProcess(Document document) => ShouldProcess(document?.FilePath);
+
+        public static EvolveUIMapper GetOrAddMapper(Document document)
+        {
+            Debug.Assert(document != null);
+            if(!ShouldProcess(document))
+                return null;
+
+            var mapper = GetMapper(document);
+            if(mapper == null)
+                _mappers[document.Id] = mapper = new(document);
+            return mapper;
+        }
+
+        public static int? ConvertOriginalLineColumnToMappedIndex(Document document, int line, int column) => GetMapper(document)?.ConvertOriginalLineColumnToMappedIndex(line, column);
+
+        public static SourceText ApplyText(Document document, SourceText sourceText)
+        {
+            if(document == null || sourceText == null)
+                return sourceText;
+
+            var mapper = GetMapper(document);
+            if (mapper == null)
+            {
+                Debug.Assert(!ShouldProcess(document)); // it should be already tracked? if debug will fire then add it here
+                return sourceText;
+            }
+
+            return mapper.ApplyText(sourceText) ?? sourceText;
+        }
+
+
         // events from the outside
         public static void OnDocumentAdded(Document document)
         {
-            Debug.Assert(document != null);
-            if (document == null)
-                return;
-            if(_mappers.ContainsKey(document.Id))
-                return;
-
-            EvolveUIMapper mapper = new (document);
-            _mappers[document.Id] = mapper;
-            mapper.TextChanged();
+            GetOrAddMapper(document);
+//             mapper.TextChanged();
         }
         public static void OnDocumentClosing(DocumentId documentId)
         {
@@ -33,9 +62,12 @@ namespace OmniSharp.Roslyn
         }
         public static void OnDocumentTextChanged(Document document)
         {
-            if(document != null && _mappers.TryGetValue(document.Id, out var mapper))
-               mapper.TextChanged();
+//            GetMapper(document)?.TextChanged();
         }
 
+        public static EvolveUIMapper GetMapper(DocumentId documentId) => documentId != null ? _mappers.GetValueOrDefault(documentId) : null;
+        public static EvolveUIMapper GetMapper(Document document) => GetMapper(document?.Id);
+        public static bool IsEvolveUI(DocumentId documentId) => GetMapper(documentId) != null;
+        public static bool IsEvolveUI(Document document) => GetMapper(document) != null;
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -62,6 +63,7 @@ namespace OmniSharp.Roslyn
             {
                 if (changes == null)
                 {
+                    // update case
                     var sourceText = SourceText.From(buffer);
 
                     foreach (var documentId in documentIds)
@@ -78,13 +80,14 @@ namespace OmniSharp.Roslyn
                             continue;
                         }
 
-                        solution = document.WithText(sourceText).Project.Solution;
+                        solution = document.WithText(EvolveUI.ApplyText(document, sourceText)).Project.Solution;
                         _logger.LogDebug("Updating file {0} with new text:\n{1}", request.FileName, sourceText);
                     }
                 }
                 else
                 {
-                    foreach (var documentId in documentIds)
+                    Debug.Assert(false, "unexpected in our case/2?");
+                    foreach(var documentId in documentIds)
                     {
                         var document = solution.GetDocument(documentId);
                         var sourceText = await document.GetTextAsync();
@@ -125,6 +128,7 @@ namespace OmniSharp.Roslyn
             }
             else if (buffer != null)
             {
+                // initial case
                 _logger.LogDebug("Adding transient file for {0}\n{1}", request.FileName, buffer);
                 TryAddTransientDocument(request.FileName, buffer);
             }
@@ -132,6 +136,7 @@ namespace OmniSharp.Roslyn
 
         public async Task UpdateBufferAsync(ChangeBufferRequest request)
         {
+            Debug.Assert(false, "unexpected in our case?");
             if (request.FileName == null)
             {
                 return;
@@ -176,7 +181,7 @@ namespace OmniSharp.Roslyn
             var projects = FindProjectsByFileName(fileName);
             if (!projects.Any())
             {
-                if (fileName.EndsWith(".cs") && _workspace.TryAddMiscellaneousDocument(fileName, LanguageNames.CSharp) != null)
+                if ((fileName.EndsWith(".cs") || fileName.EndsWith(".ui")) && _workspace.TryAddMiscellaneousDocument(fileName, LanguageNames.CSharp) != null)
                 {
                     _fileSystemWatcher.Watch(fileName, OnFileChanged);
                     return true;

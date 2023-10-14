@@ -166,7 +166,7 @@ namespace OmniSharp
 
         public DocumentId TryAddMiscellaneousDocument(string filePath, string language)
         {
-            return TryAddMiscellaneousDocument(filePath, new OmniSharpTextLoader(filePath), language);
+            return TryAddMiscellaneousDocument(filePath, EvolveUI.ShouldProcess(filePath) ? new EvolveUITextLoader(this, filePath) : new OmniSharpTextLoader(filePath), language);
         }
 
         public bool TryRemoveMiscellaneousDocument(string filePath)
