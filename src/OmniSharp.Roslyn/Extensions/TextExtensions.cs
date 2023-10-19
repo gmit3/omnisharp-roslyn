@@ -63,5 +63,9 @@ namespace OmniSharp.Extensions
             => TextSpan.FromBounds(
                 start: text.GetPositionFromLineAndOffset(change.StartLine, change.StartColumn),
                 end: text.GetPositionFromLineAndOffset(change.EndLine, change.EndColumn));
+
+
+        // returns true also if empty span is equal to index
+        public static bool Contains2(this TextSpan span, int index) => span.IsEmpty ? span.Start == index : span.Contains(index);
     }
 }

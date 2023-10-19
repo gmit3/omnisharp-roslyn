@@ -7,9 +7,11 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Document = Microsoft.CodeAnalysis.Document;
+using Range = OmniSharp.Models.V2.Range;
 
 namespace OmniSharp.Roslyn
 {
@@ -17,7 +19,7 @@ namespace OmniSharp.Roslyn
     {
         private static readonly Dictionary<DocumentId, EvolveUIMapper> _mappers = new();
 
-        public static bool ShouldProcess(string filepath) => filepath?.EndsWith(".ui", StringComparison.CurrentCultureIgnoreCase) ?? false;
+        public static bool ShouldProcess(string filepath) => false;//filepath?.EndsWith(".ui", StringComparison.CurrentCultureIgnoreCase) ?? false;
         public static bool ShouldProcess(Document document) => ShouldProcess(document?.FilePath);
 
         public static EvolveUIMapper GetOrAddMapper(Document document)
@@ -32,7 +34,27 @@ namespace OmniSharp.Roslyn
             return mapper;
         }
 
-        public static int? ConvertOriginalLineColumnToMappedIndex(Document document, int line, int column) => GetMapper(document)?.ConvertOriginalLineColumnToMappedIndex(line, column);
+
+        public static int? ConvertOriginalLineColumnToModifiedIndex(Document document, int line, int column, out EvolveUIMapper mapper)
+        {
+            mapper = GetMapper(document);
+            return mapper?.ConvertOriginalLineColumnToModifiedIndex(line, column);
+        }
+
+        public static TextSpan? ConvertOriginalRangeToModifiedSpan(Document document, Range range, out EvolveUIMapper mapper)
+        {
+            mapper = GetMapper(document);
+            return mapper?.ConvertOriginalRangeToModifiedSpan(range);
+        }
+
+        public static TextSpan? ConvertOriginalTextSpanToModified(Document document, TextSpan span,
+            out EvolveUIMapper mapper)
+        {
+            mapper = GetMapper(document);
+            return mapper?.ConvertOriginalTextSpanToModified(span);
+        }
+
+
 
         public static SourceText ApplyText(Document document, SourceText sourceText)
         {

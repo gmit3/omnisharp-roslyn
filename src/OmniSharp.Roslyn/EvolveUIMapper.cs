@@ -5,15 +5,21 @@ using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using OmniSharp.Extensions;
+using OmniSharp.Models.V2;
 using OmniSharp.Roslyn.Utilities;
+using Range = OmniSharp.Models.V2.Range;
+
 // ReSharper disable InconsistentNaming
 
 namespace OmniSharp.Roslyn
 {
+    [DebuggerDisplay("{GetDebuggerDisplay(),nq}")]
     internal class EvolveUIMapper
     {
         private Func<Document> GetDocument;
         public Document document => GetDocument != null ? GetDocument() : null;
+        public DocumentId document_id => document?.Id;
         public readonly string filepath;
 
         public SourceText original_source { get; private set; }
@@ -71,6 +77,10 @@ namespace OmniSharp.Roslyn
         }
 
 
+        internal string GetDebuggerDisplay()
+            => @$"{document_id}, lines({original_source.Lines.Count}, {modified_source.Lines.Count})";
+
+
         public SourceText ApplyText(SourceText source_text, bool force = false)
         {
             Debug.Assert(source_text != null);
@@ -83,20 +93,26 @@ namespace OmniSharp.Roslyn
             chunks.Clear();
             chunks.Add(new OriginalTextChunk());
             chunks[0].modified_span = chunks[0].original_span = new TextSpan(0, original_string.Length);
+            chunks.Add(new OriginalTextChunk()); // empty chunk to allow addressing place behind the last char
+            chunks[1].modified_span =
+                chunks[1].original_span = new TextSpan(original_string.Length, 0);
 
             ProcessSource();
             return modified_source;
         }
 
+//        private readonly string processed_marker = "<<EvolveUI processed marker>>";
         private void ProcessSource()
         {
+/*            Debug.Assert(!original_string.Contains(processed_marker));
+
             // #TODO: inserting the same single point won't work yet
-            InsertLine(0, "// blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip");
+            InsertLine(0, $"// {processed_marker} blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip");
 //             InsertLine(0, "// blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip");
 //             InsertLine(0, "// blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip");
             Replace("template AppRoot : AppRoot", "class __evolveUI__AppRoot");
             ReplaceAll("state", "");
-            ReplaceAll("[@", "\"xx-style-xx\"", "]");
+            ReplaceAll("[@", "\"xx-style-xx\"", "]");*/
         }
 
         public void TextChanged()
@@ -113,18 +129,22 @@ namespace OmniSharp.Roslyn
         public (int, int)? FindChunkIndex(int index, Func<Chunk, TextSpan> GetTextSpan)
         {
             int i = chunks.BinarySearch(null, Comparer<Chunk>.Create((l, r) => {
+                // comparer looks if index is below, above or within textspan
+                // since it takes two textspans as a parameter, 'null' is a marker to use index for comparison
                 int less = l == null ? -1 : 1;
-                var myspan = l ?? r;
-                if(index < GetTextSpan(myspan).Start)
+                var myspan = GetTextSpan(l ?? r);
+                if(index < myspan.Start)
                     return less;
-                else if(index < GetTextSpan(myspan).End)
+                else if (myspan.IsEmpty && index == myspan.End)
+                    return 0;       // #EVOLVEUI revisit this? should chunks with zero length exist?
+                else if(index < myspan.End)
                     return 0;
                 else
                     return -less;
             }));
             if(i < 0)
                 return null;
-            Debug.Assert(GetTextSpan(chunks[i]).Contains(index));
+            Debug.Assert(GetTextSpan(chunks[i]).Contains2(index));
 
             return (i, index - GetTextSpan(chunks[i]).Start);
         }
@@ -237,11 +257,19 @@ namespace OmniSharp.Roslyn
                 return null;
             var (chunk, index_within_chunk) = oc.Value;
 
-//            Debug.Assert(chunk is OriginalTextChunk);
-            if (chunk is not OriginalTextChunk)
-                return null;    // at the moment ModifiedTextChunks are not supported
+            //            Debug.Assert(chunk is OriginalTextChunk);
+            if(chunk is not OriginalTextChunk)
+            {
+                // at the moment ModifiedTextChunks are not supported, but it's ok if index is on its bounds
+                if(index_within_chunk == 0)
+                    return chunk.modified_start;
+                else if(chunk.original_length > 0 && index_within_chunk == chunk.original_length - 1)
+                    return chunk.modified_length > 0 ? chunk.modified_end - 1 : chunk.modified_end;
+                else
+                    return null;
+            }
 
-            Debug.Assert(chunk.modified_span.Contains(chunk.modified_span.Start + index_within_chunk));
+            Debug.Assert(chunk.modified_span.Contains2(chunk.modified_span.Start + index_within_chunk));
             return chunk.modified_span.Start + index_within_chunk;
         }
 
@@ -254,13 +282,21 @@ namespace OmniSharp.Roslyn
 
 //            Debug.Assert(chunk is OriginalTextChunk);
             if(chunk is not OriginalTextChunk)
-                return null;    // at the moment ModifiedTextChunks are not supported
+            {
+                // at the moment ModifiedTextChunks are not supported, but it's ok if index is on its bounds
+                if (index_within_chunk == 0)
+                    return chunk.original_start;
+                else if (chunk.modified_length > 0 && index_within_chunk == chunk.modified_length - 1)
+                    return chunk.original_length > 0 ? chunk.original_end - 1 : chunk.original_end;
+                else
+                    return null;
+            }
 
-            Debug.Assert(chunk.original_span.Contains(chunk.original_span.Start + index_within_chunk));
+            Debug.Assert(chunk.original_span.Contains2(chunk.original_span.Start + index_within_chunk));
             return chunk.original_span.Start + index_within_chunk;
         }
 
-        public int? ConvertOriginalLineColumnToMappedIndex(int line, int column)
+        public int? ConvertOriginalLineColumnToModifiedIndex(int line, int column)
         {
             try
             {
@@ -271,6 +307,25 @@ namespace OmniSharp.Roslyn
                 return null;
             }
         }
+        public int? ConvertOriginalPointToModifiedIndex(Point point) =>
+            ConvertOriginalLineColumnToModifiedIndex(point.Line, point.Column);
+
+        public TextSpan? ConvertOriginalRangeToModifiedSpan(Range range)
+        {
+            int? i = ConvertOriginalPointToModifiedIndex(range.Start);
+            int? j = ConvertOriginalPointToModifiedIndex(range.End);
+            if (i.HasValue && j.HasValue)
+                return TextSpan.FromBounds(i.Value, j.Value);
+            else
+                return null;
+        }
+
+        public TextSpan? ConvertOriginalTextSpanToModified(TextSpan span)
+        {
+            int? start = OriginalToModifiedIndex(span.Start);
+            int? end = OriginalToModifiedIndex(span.End);
+            return start.HasValue && end.HasValue ? TextSpan.FromBounds(start.Value, end.Value) : null;
+        }
 
         public TextSpan? ConvertModifiedTextSpanToOriginal(TextSpan span)
         {
@@ -279,5 +334,24 @@ namespace OmniSharp.Roslyn
             return start.HasValue && end.HasValue ? TextSpan.FromBounds(start.Value, end.Value) : null;
         }
 
-}
+        public LinePosition? ConvertModifiedIndexToOriginalLinePosition(int position)
+        {
+            try
+            {
+                int? index = ModifiedToOriginalIndex(position);
+                return index.HasValue ? original_source.Lines.GetLinePosition(index.Value) : null;
+            } catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public Point ConvertModifiedIndexToOriginalPoint(int position)
+        {
+            LinePosition? lpos = ConvertModifiedIndexToOriginalLinePosition(position);
+            return lpos.HasValue ? new Point{Line = lpos.Value.Line, Column = lpos.Value.Character} : null;
+        }
+        public LinePosition? ConvertModifiedLinePositionToOriginal(LinePosition linepos) =>
+            ConvertModifiedIndexToOriginalLinePosition(modified_source.Lines.GetPosition(linepos));
+    }
 }
