@@ -53,15 +53,16 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
 
         private async Task<IReadOnlyList<CodeElement>> GetCodeElementsAsync(Document document)
         {
-            var text = await document.GetTextAsync();
+            var mapper = EvolveUI.ShouldProcess(document) ? EvolveUI.GetMapper(document) : null;
+            var text = mapper != null ? mapper.original_source : await document.GetTextAsync();
             var syntaxRoot = await document.GetSyntaxRootAsync();
             var semanticModel = await document.GetSemanticModelAsync();
 
             var results = ImmutableList.CreateBuilder<CodeElement>();
 
-            foreach (var node in ((CompilationUnitSyntax)syntaxRoot).Members)
+            foreach(var node in ((CompilationUnitSyntax)syntaxRoot).Members)
             {
-                foreach (var element in CreateCodeElements(node, text, semanticModel))
+                foreach (var element in CreateCodeElements(node, text, semanticModel, mapper))
                 {
                     if (element != null)
                     {
@@ -73,42 +74,42 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
             return results.ToImmutable();
         }
 
-        private IEnumerable<CodeElement> CreateCodeElements(SyntaxNode node, SourceText text, SemanticModel semanticModel)
+        private IEnumerable<CodeElement> CreateCodeElements(SyntaxNode node, SourceText text, SemanticModel semanticModel, EvolveUIMapper mapper)
         {
             switch (node)
             {
                 case TypeDeclarationSyntax typeDeclaration:
-                    yield return CreateCodeElement(typeDeclaration, text, semanticModel);
+                    yield return CreateCodeElement(typeDeclaration, text, semanticModel, mapper);
                     break;
                 case DelegateDeclarationSyntax delegateDeclaration:
-                    yield return CreateCodeElement(delegateDeclaration, text, semanticModel);
+                    yield return CreateCodeElement(delegateDeclaration, text, semanticModel, mapper);
                     break;
                 case EnumDeclarationSyntax enumDeclaration:
-                    yield return CreateCodeElement(enumDeclaration, text, semanticModel);
+                    yield return CreateCodeElement(enumDeclaration, text, semanticModel, mapper);
                     break;
                 case BaseNamespaceDeclarationSyntax namespaceDeclaration:
-                    yield return CreateCodeElement(namespaceDeclaration, text, semanticModel);
+                    yield return CreateCodeElement(namespaceDeclaration, text, semanticModel, mapper);
                     break;
                 case BaseMethodDeclarationSyntax baseMethodDeclaration:
-                    yield return CreateCodeElement(baseMethodDeclaration, text, semanticModel);
+                    yield return CreateCodeElement(baseMethodDeclaration, text, semanticModel, mapper);
                     break;
                 case BasePropertyDeclarationSyntax basePropertyDeclaration:
-                    yield return CreateCodeElement(basePropertyDeclaration, text, semanticModel);
+                    yield return CreateCodeElement(basePropertyDeclaration, text, semanticModel, mapper);
                     break;
                 case BaseFieldDeclarationSyntax baseFieldDeclaration:
                     foreach (var variableDeclarator in baseFieldDeclaration.Declaration.Variables)
                     {
-                        yield return CreateCodeElement(variableDeclarator, baseFieldDeclaration, text, semanticModel);
+                        yield return CreateCodeElement(variableDeclarator, baseFieldDeclaration, text, semanticModel, mapper);
                     }
 
                     break;
                 case EnumMemberDeclarationSyntax enumMemberDeclarationSyntax:
-                    yield return CreateCodeElement(enumMemberDeclarationSyntax, text, semanticModel);
+                    yield return CreateCodeElement(enumMemberDeclarationSyntax, text, semanticModel, mapper);
                     break;
             }
         }
 
-        private CodeElement CreateCodeElement(TypeDeclarationSyntax typeDeclaration, SourceText text, SemanticModel semanticModel)
+        private CodeElement CreateCodeElement(TypeDeclarationSyntax typeDeclaration, SourceText text, SemanticModel semanticModel, EvolveUIMapper mapper)
         {
             var symbol = semanticModel.GetDeclaredSymbol(typeDeclaration);
             if (symbol == null)
@@ -123,12 +124,12 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
                 DisplayName = symbol.ToDisplayString(SymbolDisplayFormats.TypeFormat)
             };
 
-            AddRanges(builder, typeDeclaration.AttributeLists.Span, typeDeclaration.Span, typeDeclaration.Identifier.Span, text);
+            AddRanges(builder, typeDeclaration.AttributeLists.Span, typeDeclaration.Span, typeDeclaration.Identifier.Span, text, mapper);
             AddSymbolProperties(symbol, builder);
 
             foreach (var member in typeDeclaration.Members)
             {
-                foreach (var childElement in CreateCodeElements(member, text, semanticModel))
+                foreach (var childElement in CreateCodeElements(member, text, semanticModel, mapper))
                 {
                     builder.AddChild(childElement);
                 }
@@ -137,7 +138,7 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
             return builder.ToCodeElement();
         }
 
-        private CodeElement CreateCodeElement(DelegateDeclarationSyntax delegateDeclaration, SourceText text, SemanticModel semanticModel)
+        private CodeElement CreateCodeElement(DelegateDeclarationSyntax delegateDeclaration, SourceText text, SemanticModel semanticModel, EvolveUIMapper mapper)
         {
             var symbol = semanticModel.GetDeclaredSymbol(delegateDeclaration);
             if (symbol == null)
@@ -152,13 +153,13 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
                 DisplayName = symbol.ToDisplayString(SymbolDisplayFormats.TypeFormat),
             };
 
-            AddRanges(builder, delegateDeclaration.AttributeLists.Span, delegateDeclaration.Span, delegateDeclaration.Identifier.Span, text);
+            AddRanges(builder, delegateDeclaration.AttributeLists.Span, delegateDeclaration.Span, delegateDeclaration.Identifier.Span, text, mapper);
             AddSymbolProperties(symbol, builder);
 
             return builder.ToCodeElement();
         }
 
-        private CodeElement CreateCodeElement(EnumDeclarationSyntax enumDeclaration, SourceText text, SemanticModel semanticModel)
+        private CodeElement CreateCodeElement(EnumDeclarationSyntax enumDeclaration, SourceText text, SemanticModel semanticModel, EvolveUIMapper mapper)
         {
             var symbol = semanticModel.GetDeclaredSymbol(enumDeclaration);
             if (symbol == null)
@@ -173,12 +174,12 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
                 DisplayName = symbol.ToDisplayString(SymbolDisplayFormats.TypeFormat),
             };
 
-            AddRanges(builder, enumDeclaration.AttributeLists.Span, enumDeclaration.Span, enumDeclaration.Identifier.Span, text);
+            AddRanges(builder, enumDeclaration.AttributeLists.Span, enumDeclaration.Span, enumDeclaration.Identifier.Span, text, mapper);
             AddSymbolProperties(symbol, builder);
 
             foreach (var member in enumDeclaration.Members)
             {
-                foreach (var childElement in CreateCodeElements(member, text, semanticModel))
+                foreach (var childElement in CreateCodeElements(member, text, semanticModel, mapper))
                 {
                     builder.AddChild(childElement);
                 }
@@ -187,7 +188,7 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
             return builder.ToCodeElement();
         }
 
-        private CodeElement CreateCodeElement(BaseNamespaceDeclarationSyntax namespaceDeclaration, SourceText text, SemanticModel semanticModel)
+        private CodeElement CreateCodeElement(BaseNamespaceDeclarationSyntax namespaceDeclaration, SourceText text, SemanticModel semanticModel, EvolveUIMapper mapper)
         {
             var symbol = semanticModel.GetDeclaredSymbol(namespaceDeclaration);
             if (symbol == null)
@@ -202,11 +203,11 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
                 DisplayName = symbol.ToDisplayString(SymbolDisplayFormats.TypeFormat),
             };
 
-            AddRanges(builder, attributesSpan: default, namespaceDeclaration.Span, namespaceDeclaration.Name.Span, text);
+            AddRanges(builder, attributesSpan: default, namespaceDeclaration.Span, namespaceDeclaration.Name.Span, text, mapper);
 
             foreach (var member in namespaceDeclaration.Members)
             {
-                foreach (var childElement in CreateCodeElements(member, text, semanticModel))
+                foreach (var childElement in CreateCodeElements(member, text, semanticModel, mapper))
                 {
                     builder.AddChild(childElement);
                 }
@@ -215,7 +216,7 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
             return builder.ToCodeElement();
         }
 
-        private CodeElement CreateCodeElement(BaseMethodDeclarationSyntax baseMethodDeclaration, SourceText text, SemanticModel semanticModel)
+        private CodeElement CreateCodeElement(BaseMethodDeclarationSyntax baseMethodDeclaration, SourceText text, SemanticModel semanticModel, EvolveUIMapper mapper)
         {
             var symbol = semanticModel.GetDeclaredSymbol(baseMethodDeclaration);
             if (symbol == null)
@@ -230,13 +231,13 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
                 DisplayName = symbol.ToDisplayString(SymbolDisplayFormats.MemberFormat),
             };
 
-            AddRanges(builder, baseMethodDeclaration.AttributeLists.Span, baseMethodDeclaration.Span, GetNameSpan(baseMethodDeclaration), text);
+            AddRanges(builder, baseMethodDeclaration.AttributeLists.Span, baseMethodDeclaration.Span, GetNameSpan(baseMethodDeclaration), text, mapper);
             AddSymbolProperties(symbol, builder);
 
             return builder.ToCodeElement();
         }
 
-        private CodeElement CreateCodeElement(BasePropertyDeclarationSyntax basePropertyDeclaration, SourceText text, SemanticModel semanticModel)
+        private CodeElement CreateCodeElement(BasePropertyDeclarationSyntax basePropertyDeclaration, SourceText text, SemanticModel semanticModel, EvolveUIMapper mapper)
         {
             var symbol = semanticModel.GetDeclaredSymbol(basePropertyDeclaration);
             if (symbol == null)
@@ -251,13 +252,13 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
                 DisplayName = symbol.ToDisplayString(SymbolDisplayFormats.MemberFormat),
             };
 
-            AddRanges(builder, basePropertyDeclaration.AttributeLists.Span, basePropertyDeclaration.Span, GetNameSpan(basePropertyDeclaration), text);
+            AddRanges(builder, basePropertyDeclaration.AttributeLists.Span, basePropertyDeclaration.Span, GetNameSpan(basePropertyDeclaration), text, mapper);
             AddSymbolProperties(symbol, builder);
 
             return builder.ToCodeElement();
         }
 
-        private CodeElement CreateCodeElement(VariableDeclaratorSyntax variableDeclarator, BaseFieldDeclarationSyntax baseFieldDeclaration, SourceText text, SemanticModel semanticModel)
+        private CodeElement CreateCodeElement(VariableDeclaratorSyntax variableDeclarator, BaseFieldDeclarationSyntax baseFieldDeclaration, SourceText text, SemanticModel semanticModel, EvolveUIMapper mapper)
         {
             var symbol = semanticModel.GetDeclaredSymbol(variableDeclarator);
             if (symbol == null)
@@ -272,13 +273,13 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
                 DisplayName = symbol.ToDisplayString(SymbolDisplayFormats.MemberFormat),
             };
 
-            AddRanges(builder, baseFieldDeclaration.AttributeLists.Span, variableDeclarator.Span, variableDeclarator.Identifier.Span, text);
+            AddRanges(builder, baseFieldDeclaration.AttributeLists.Span, variableDeclarator.Span, variableDeclarator.Identifier.Span, text, mapper);
             AddSymbolProperties(symbol, builder);
 
             return builder.ToCodeElement();
         }
 
-        private CodeElement CreateCodeElement(EnumMemberDeclarationSyntax enumMemberDeclaration, SourceText text, SemanticModel semanticModel)
+        private CodeElement CreateCodeElement(EnumMemberDeclarationSyntax enumMemberDeclaration, SourceText text, SemanticModel semanticModel, EvolveUIMapper mapper)
         {
             var symbol = semanticModel.GetDeclaredSymbol(enumMemberDeclaration);
             if (symbol == null)
@@ -293,7 +294,7 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
                 DisplayName = symbol.ToDisplayString(SymbolDisplayFormats.MemberFormat),
             };
 
-            AddRanges(builder, enumMemberDeclaration.AttributeLists.Span, enumMemberDeclaration.Span, enumMemberDeclaration.Identifier.Span, text);
+            AddRanges(builder, enumMemberDeclaration.AttributeLists.Span, enumMemberDeclaration.Span, enumMemberDeclaration.Identifier.Span, text, mapper);
             AddSymbolProperties(symbol, builder);
 
             return builder.ToCodeElement();
@@ -333,19 +334,25 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
             }
         }
 
-        private static void AddRanges(CodeElement.Builder builder, TextSpan attributesSpan, TextSpan fullSpan, TextSpan nameSpan, SourceText text)
+        private static void AddRanges(CodeElement.Builder builder, TextSpan attributesSpan, TextSpan fullSpan, TextSpan nameSpan, SourceText text, EvolveUIMapper mapper)
         {
+            if (attributesSpan != default)
+                attributesSpan = mapper?.ConvertModifiedTextSpanToOriginal(attributesSpan) ?? default;
             if (attributesSpan != default)
             {
                 builder.AddRange(SymbolRangeNames.Attributes, text.GetRangeFromSpan(attributesSpan));
             }
 
-            if (fullSpan != default)
+            if(fullSpan != default)
+                fullSpan = mapper?.ConvertModifiedTextSpanToOriginal(fullSpan) ?? default;
+            if(fullSpan != default)
             {
                 builder.AddRange(SymbolRangeNames.Full, text.GetRangeFromSpan(fullSpan));
             }
 
-            if (nameSpan != default)
+            if(nameSpan != default)
+                nameSpan = mapper?.ConvertModifiedTextSpanToOriginal(nameSpan) ?? default;
+            if(nameSpan != default)
             {
                 builder.AddRange(SymbolRangeNames.Name, text.GetRangeFromSpan(nameSpan));
             }

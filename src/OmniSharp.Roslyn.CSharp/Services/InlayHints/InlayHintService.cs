@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading;
@@ -17,6 +19,7 @@ using OmniSharp.Models.v1.InlayHints;
 using OmniSharp.Options;
 using OmniSharp.Roslyn.CSharp.Helpers;
 using OmniSharp.Roslyn.Utilities;
+using Point = OmniSharp.Models.V2.Point;
 
 #nullable enable
 
@@ -55,8 +58,19 @@ internal class InlayHintService :
         }
 
         // #startup 5 get inlay hints!!!
-        var sourceText = await document.GetTextAsync();
-        var mappedSpan = sourceText.GetSpanFromRange(request.Location.Range);
+        var mappedSpan = EvolveUI.ConvertOriginalRangeToModifiedSpan(document, request.Location.Range, out var mapper);
+        SourceText sourceText;
+        if (mapper != null)
+        {
+            if(mappedSpan == null)
+                return InlayHintResponse.None;
+            sourceText = mapper.original_source;
+        }
+        else
+        {
+            sourceText = await document.GetTextAsync();
+            mappedSpan = sourceText.GetSpanFromRange(request.Location.Range);
+        }
 
         var inlayHintsOptions = _omniSharpOptions.CurrentValue.RoslynExtensionsOptions.InlayHintsOptions;
         var options = new OmniSharpInlineHintsOptions
@@ -81,13 +95,13 @@ internal class InlayHintService :
             }
         };
 
-        var hints = await OmniSharpInlineHintsService.GetInlineHintsAsync(document, mappedSpan, options, CancellationToken.None);
+        var hints = await OmniSharpInlineHintsService.GetInlineHintsAsync(document, mappedSpan!.Value, options, CancellationToken.None);
 
         var solutionVersion = _workspace.CurrentSolution.Version;
 
         return new()
         {
-            InlayHints = _cache.MapAndCacheHints(hints, document, solutionVersion, sourceText)
+            InlayHints = _cache.MapAndCacheHints(hints, document, solutionVersion, sourceText, mapper)
         };
     }
 
@@ -125,7 +139,8 @@ internal class InlayHintService :
             _logger = logger;
         }
 
-        public List<InlayHint> MapAndCacheHints(ImmutableArray<OmniSharpInlineHint> roslynHints, Document document, VersionStamp solutionVersion, SourceText text)
+        public List<InlayHint> MapAndCacheHints(ImmutableArray<OmniSharpInlineHint> roslynHints, Document document,
+            VersionStamp solutionVersion, SourceText text, EvolveUIMapper? mapper)
         {
             var resultList = new List<InlayHint>();
             var solutionVersionString = solutionVersion.ToString();
@@ -138,11 +153,19 @@ internal class InlayHintService :
                 foreach (var hint in roslynHints)
                 {
                     var position = hintsList!.Count;
-                    resultList.Add(new InlayHint()
-                    {
+
+                    Point point;
+                    if (mapper != null)
+                        point = mapper.ConvertModifiedIndexToOriginalPoint(hint.Span.End);
+                    else
+                        point = text.GetPointFromPosition(hint.Span.End);
+                    if (point == null)
+                        continue;
+
+                    resultList.Add(new InlayHint() {
                         Label = string.Concat(hint.DisplayParts),
-                        Position = text.GetPointFromPosition(hint.Span.End),
-                        TextEdits = ConvertToTextChanges(hint.ReplacementTextChange, text),
+                        Position = point,
+                        TextEdits = ConvertToTextChanges(hint.ReplacementTextChange, text, mapper),
                         Data = (solutionVersionString, position)
                     });
 
@@ -156,8 +179,16 @@ internal class InlayHintService :
             return resultList;
         }
 
-        internal static LinePositionSpanTextChange[]? ConvertToTextChanges(TextChange? textChange, SourceText sourceText)
+        internal static LinePositionSpanTextChange[]? ConvertToTextChanges(TextChange? textChange, SourceText sourceText, EvolveUIMapper? mapper)
         {
+            if (textChange.HasValue && mapper != null)
+            {
+                var newspan = mapper.ConvertModifiedTextSpanToOriginal(textChange.Value.Span);
+                if (!newspan.HasValue)
+                    return null;
+                textChange = new TextChange(newspan!.Value, textChange!.Value!.NewText!);
+            }
+
             return textChange.HasValue
                 ? new[] { TextChanges.Convert(sourceText, textChange.Value) }
                 : null;

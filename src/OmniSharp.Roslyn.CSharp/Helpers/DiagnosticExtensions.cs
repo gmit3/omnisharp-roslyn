@@ -1,9 +1,11 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System;
+using Microsoft.CodeAnalysis;
 using OmniSharp.Models.Diagnostics;
 using OmniSharp.Roslyn.CSharp.Services.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using OmniSharp.Roslyn;
 
 namespace OmniSharp.Helpers
 {
@@ -12,16 +14,45 @@ namespace OmniSharp.Helpers
         private static readonly ImmutableHashSet<string> _tagFilter =
             ImmutableHashSet.Create("Unnecessary", "Deprecated");
 
-        internal static DiagnosticLocation ToDiagnosticLocation(this Diagnostic diagnostic)
+        private static DocumentId cached_documentid;
+        private static WeakReference<EvolveUIMapper> cached_mapper;
+
+        internal static DiagnosticLocation ToDiagnosticLocation(this Diagnostic diagnostic,
+            DocumentId documentId = null)
         {
             var span = diagnostic.Location.GetMappedLineSpan();
+            var StartLinePosition = span.StartLinePosition;
+            var EndLinePosition = span.EndLinePosition;
+
+            EvolveUIMapper mapper = null;
+            if (documentId != null)
+            {
+                if (cached_documentid == documentId)
+                    cached_mapper.TryGetTarget(out mapper);
+                if (mapper == null)
+                {
+                    mapper = EvolveUI.GetMapper(documentId);
+                    cached_documentid = mapper?.document_id;
+                    cached_mapper = new WeakReference<EvolveUIMapper>(mapper);
+                }
+            }
+            if (mapper != null)
+            {
+                var StartLinePosition2 = mapper.ConvertModifiedLinePositionToOriginal(StartLinePosition);
+                var EndLinePosition2 = mapper.ConvertModifiedLinePositionToOriginal(EndLinePosition);
+                if (!StartLinePosition2.HasValue || !EndLinePosition2.HasValue)
+                    return null;
+                StartLinePosition = StartLinePosition2.Value;
+                EndLinePosition = EndLinePosition2.Value;
+            }
+
             return new DiagnosticLocation
             {
                 FileName = span.Path,
-                Line = span.StartLinePosition.Line,
-                Column = span.StartLinePosition.Character,
-                EndLine = span.EndLinePosition.Line,
-                EndColumn = span.EndLinePosition.Character,
+                Line = StartLinePosition.Line,
+                Column = StartLinePosition.Character,
+                EndLine = EndLinePosition.Line,
+                EndColumn = EndLinePosition.Character,
                 Text = diagnostic.GetMessage(),
                 LogLevel = diagnostic.Severity.ToString(),
                 Tags = diagnostic
@@ -35,12 +66,13 @@ namespace OmniSharp.Helpers
         internal static IEnumerable<DiagnosticLocation> DistinctDiagnosticLocationsByProject(this IEnumerable<DocumentDiagnostics> documentDiagnostic)
         {
             return documentDiagnostic
-                .SelectMany(x => x.Diagnostics, (parent, child) => (projectName: parent.ProjectName, diagnostic: child))
+                .SelectMany(x => x.Diagnostics, (parent, child) => (projectName: parent.ProjectName, documentId: parent.DocumentId, diagnostic: child))
                 .Select(x => new
                 {
-                    location = x.diagnostic.ToDiagnosticLocation(),
+                    location = x.diagnostic.ToDiagnosticLocation(x.documentId),
                     project = x.projectName
                 })
+                .Where(x => x.location != null)
                 .GroupBy(x => x.location)
                 .Select(x =>
                 {

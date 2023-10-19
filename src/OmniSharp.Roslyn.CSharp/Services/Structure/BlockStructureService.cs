@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.ExternalAccess.OmniSharp.Structure;
+using Microsoft.CodeAnalysis.Text;
 using OmniSharp.Extensions;
 using OmniSharp.Mef;
 using OmniSharp.Models.V2;
@@ -31,7 +32,8 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
                 return new BlockStructureResponse { Spans = Array.Empty<CodeFoldingBlock>() };
             }
 
-            var text = await document.GetTextAsync();
+            var mapper = EvolveUI.ShouldProcess(document) ? EvolveUI.GetMapper(document) : null;
+            var text = mapper != null ? mapper.original_source : await document.GetTextAsync();
 
             var options = new OmniSharpBlockStructureOptions(
                 ShowBlockStructureGuidesForCommentsAndPreprocessorRegions: true,
@@ -40,12 +42,22 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
             var structure = await OmniSharpBlockStructureService.GetBlockStructureAsync(document, options, CancellationToken.None);
 
             var outliningSpans = new List<CodeFoldingBlock>();
-            foreach (var span in structure.Spans)
+            foreach(var span in structure.Spans)
             {
                 if (span.IsCollapsible)
                 {
+                    TextSpan? textspan;
+                    if (mapper != null)
+                    {
+                        textspan = mapper.ConvertModifiedTextSpanToOriginal(span.TextSpan);
+                        if (!textspan.HasValue)
+                            continue;
+                    }
+                    else
+                        textspan = span.TextSpan;
+
                     outliningSpans.Add(new CodeFoldingBlock(
-                        text.GetRangeFromSpan(span.TextSpan),
+                        text.GetRangeFromSpan(textspan.Value),
                         type: ConvertToWellKnownBlockType(span.Type)));
                 }
             }

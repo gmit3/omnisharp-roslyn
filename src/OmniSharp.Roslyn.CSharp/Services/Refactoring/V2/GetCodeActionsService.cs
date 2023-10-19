@@ -33,6 +33,8 @@ namespace OmniSharp.Roslyn.CSharp.Services.Refactoring.V2
         {
             var availableActions = await GetAvailableCodeActions(request);
 
+            // #EVOLVEUI no text coords here
+
             return new GetCodeActionsResponse
             {
                 CodeActions = availableActions.Select(ConvertToOmniSharpCodeAction)

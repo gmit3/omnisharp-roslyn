@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Composition;
 using System.Linq;
 using System.Text;
@@ -59,9 +60,11 @@ namespace OmniSharp.Roslyn.CSharp.Services
                 return response;
             }
 
-            int? position = EvolveUI.ConvertOriginalLineColumnToMappedIndex(document, request.Line, request.Column);
+            int? position = EvolveUI.ConvertOriginalLineColumnToModifiedIndex(document, request.Line, request.Column, out var mapper);
             if(!position.HasValue)
             {
+                if (mapper != null)
+                    return response;
                 var sourceText = await document.GetTextAsync();
                 position = sourceText.GetTextPosition(request);
             }

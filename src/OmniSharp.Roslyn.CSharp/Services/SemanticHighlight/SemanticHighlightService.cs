@@ -68,9 +68,8 @@ namespace OmniSharp.Roslyn.CSharp.Services.SemanticHighlight
                 textSpan = new TextSpan(0, text.Length);
             }
 
-            bool is_evolveui = EvolveUI.ShouldProcess(document);
-            var mapper = is_evolveui ? EvolveUI.GetMapper(document) : null;
-            if(!is_evolveui || mapper == null)
+            var mappedSpan = EvolveUI.ConvertOriginalTextSpanToModified(document, textSpan, out var mapper);
+            if(mapper == null)
             {
                 results.AddRange((await Classifier.GetClassifiedSpansAsync(highlightDocument, textSpan))
                     .Select(span => new ClassifiedResult() {
@@ -80,6 +79,10 @@ namespace OmniSharp.Roslyn.CSharp.Services.SemanticHighlight
             }
             else
             {
+                if(!mappedSpan.HasValue)
+                    return new SemanticHighlightResponse() { Spans = Array.Empty<SemanticHighlightSpan>() };
+                textSpan = mappedSpan.Value;
+
                 foreach (var cspan in await Classifier.GetClassifiedSpansAsync(highlightDocument, textSpan))
                 {
                     TextSpan? span = mapper.ConvertModifiedTextSpanToOriginal(cspan.TextSpan);

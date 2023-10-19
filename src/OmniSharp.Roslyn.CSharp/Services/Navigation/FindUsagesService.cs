@@ -40,9 +40,15 @@ namespace OmniSharp.Roslyn.CSharp.Services.Navigation
             }
 
             var semanticModel = await document.GetSemanticModelAsync();
-            var sourceText = await document.GetTextAsync();
-            var position = sourceText.Lines.GetPosition(new LinePosition(request.Line, request.Column));
-            var symbol = await SymbolFinder.FindSymbolAtPositionAsync(semanticModel, position, _workspace);
+            int? position = EvolveUI.ConvertOriginalLineColumnToModifiedIndex(document, request.Line, request.Column, out var mapper);
+            if(!position.HasValue)
+            {
+                if (mapper != null)
+                    return new QuickFixResponse();
+                var sourceText = await document.GetTextAsync();
+                position = sourceText.Lines.GetPosition(new LinePosition(request.Line, request.Column));
+            }
+            var symbol = await SymbolFinder.FindSymbolAtPositionAsync(semanticModel, position.Value, _workspace);
             if (symbol is null)
             {
                 _logger.LogWarning($"No symbol found. File: {request.FileName}, Line: {request.Line}, Column: {request.Column}.");
