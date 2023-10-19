@@ -130,7 +130,9 @@ namespace OmniSharp.Roslyn
             {
                 // initial case
                 _logger.LogDebug("Adding transient file for {0}\n{1}", request.FileName, buffer);
-                TryAddTransientDocument(request.FileName, buffer);
+                bool succeeded = TryAddTransientDocument(request.FileName, buffer, out var documentId);
+                if (succeeded && documentId != null && EvolveUI.ShouldProcess(request.FileName))
+                    EvolveUI.GetMapper(documentId)?.ApplyText(SourceText.From(buffer));
             }
         }
 
@@ -171,8 +173,11 @@ namespace OmniSharp.Roslyn
             }
         }
 
-        private bool TryAddTransientDocument(string fileName, string fileContent)
+        private bool TryAddTransientDocument(string fileName, string fileContent) =>
+            TryAddTransientDocument(fileName, fileContent, out var _);
+        private bool TryAddTransientDocument(string fileName, string fileContent, out DocumentId documentId_if_created_new)
         {
+            documentId_if_created_new = null;
             if (string.IsNullOrWhiteSpace(fileName))
             {
                 return false;
@@ -181,7 +186,7 @@ namespace OmniSharp.Roslyn
             var projects = FindProjectsByFileName(fileName);
             if (!projects.Any())
             {
-                if ((fileName.EndsWith(".cs") || fileName.EndsWith(".ui")) && _workspace.TryAddMiscellaneousDocument(fileName, LanguageNames.CSharp) != null)
+                if ((fileName.EndsWith(".cs") || fileName.EndsWith(".ui")) && (documentId_if_created_new = _workspace.TryAddMiscellaneousDocument(fileName, LanguageNames.CSharp)) != null)
                 {
                     _fileSystemWatcher.Watch(fileName, OnFileChanged);
                     return true;
