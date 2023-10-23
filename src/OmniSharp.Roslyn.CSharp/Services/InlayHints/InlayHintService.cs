@@ -38,6 +38,8 @@ internal class InlayHintService :
     private readonly InlineHintCache _cache;
     private readonly FormattingOptions _formattingOptions;
 
+    private const double ParameterRanking = 0.0;
+
     [ImportingConstructor]
     public InlayHintService(OmniSharpWorkspace workspace, FormattingOptions formattingOptions, ILoggerFactory loggerFactory, IOptionsMonitor<OmniSharpOptions> omniSharpOptions)
     {
@@ -164,6 +166,9 @@ internal class InlayHintService :
 
                     resultList.Add(new InlayHint() {
                         Label = string.Concat(hint.DisplayParts),
+                        Kind = hint.Ranking == ParameterRanking
+                            ? InlayHintKind.Parameter
+                            : InlayHintKind.Type,
                         Position = point,
                         TextEdits = ConvertToTextChanges(hint.ReplacementTextChange, text, mapper),
                         Data = (solutionVersionString, position)
