@@ -87,7 +87,7 @@ namespace OmniSharp.Roslyn
             if (source_text == null)
                 return null;
             if ((original_source?.ContentEquals(source_text) ?? false) && !force)
-                return null;
+                return modified_source;
 
             this.modified_source = this.original_source = source_text;
             chunks.Clear();
@@ -101,10 +101,10 @@ namespace OmniSharp.Roslyn
             return modified_source;
         }
 
-//        private readonly string processed_marker = "<<EvolveUI processed marker>>";
+        private readonly string processed_marker = "<<EvolveUI processed marker>>";
         private void ProcessSource()
         {
-/*            Debug.Assert(!original_string.Contains(processed_marker));
+            Debug.Assert(!original_string.Contains(processed_marker));
 
             // #TODO: inserting the same single point won't work yet
             InsertLine(0, $"// {processed_marker} blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip");
@@ -112,7 +112,7 @@ namespace OmniSharp.Roslyn
 //             InsertLine(0, "// blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip");
             Replace("template AppRoot : AppRoot", "class __evolveUI__AppRoot");
             ReplaceAll("state", "");
-            ReplaceAll("[@", "\"xx-style-xx\"", "]");*/
+            ReplaceAll("[@", "\"xx-style-xx\"", "]");
         }
 
         public void TextChanged()

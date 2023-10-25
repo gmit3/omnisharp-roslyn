@@ -19,7 +19,7 @@ namespace OmniSharp.Roslyn
     {
         private static readonly Dictionary<DocumentId, EvolveUIMapper> _mappers = new();
 
-        public static bool ShouldProcess(string filepath) => false;//filepath?.EndsWith(".ui", StringComparison.CurrentCultureIgnoreCase) ?? false;
+        public static bool ShouldProcess(string filepath) => filepath?.EndsWith(".ui", StringComparison.CurrentCultureIgnoreCase) ?? false;
         public static bool ShouldProcess(Document document) => ShouldProcess(document?.FilePath);
 
         public static EvolveUIMapper GetOrAddMapper(Document document)
