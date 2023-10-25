@@ -128,6 +128,7 @@ namespace OmniSharp.Roslyn
 
         public (int, int)? FindChunkIndex(int index, Func<Chunk, TextSpan> GetTextSpan)
         {
+            // #EVOLVEUI maybe hint chunk parameter as an optimization
             int i = chunks.BinarySearch(null, Comparer<Chunk>.Create((l, r) => {
                 // comparer looks if index is below, above or within textspan
                 // since it takes two textspans as a parameter, 'null' is a marker to use index for comparison
