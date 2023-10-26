@@ -22,8 +22,22 @@ namespace OmniSharp.Roslyn
         public DocumentId document_id => document?.Id;
         public readonly string filepath;
 
-        public SourceText original_source { get; private set; }
-        public SourceText modified_source { get; private set; }
+        private SourceText _original_source;
+        private SourceText _modified_source;
+        public SourceText original_source
+        {
+            get {
+                LoadTextIfNeeded();
+                return _original_source;
+            }
+        }
+        public SourceText modified_source
+        {
+            get {
+                LoadTextIfNeeded();
+                return _modified_source;
+            }
+        }
         private string original_string => original_source.ToString();
         private string modified_string => modified_source.ToString();
         private TextSpan original_span => new TextSpan(0, original_string.Length);
@@ -78,7 +92,7 @@ namespace OmniSharp.Roslyn
 
 
         internal string GetDebuggerDisplay()
-            => @$"{document_id}, lines({original_source.Lines.Count}, {modified_source.Lines.Count})";
+            => @$"{document_id?.Id.ToString() ?? "-"}, lines({original_source?.Lines?.Count ?? -1}, {modified_source?.Lines?.Count ?? -1})";
 
 
         public SourceText ApplyText(SourceText source_text, bool force = false)
@@ -86,19 +100,32 @@ namespace OmniSharp.Roslyn
             Debug.Assert(source_text != null);
             if (source_text == null)
                 return null;
-            if ((original_source?.ContentEquals(source_text) ?? false) && !force)
-                return modified_source;
+            if ((_original_source?.ContentEquals(source_text) ?? false) && !force)
+                return _modified_source;
 
-            this.modified_source = this.original_source = source_text;
+            _modified_source = _original_source = source_text;
             chunks.Clear();
             chunks.Add(new OriginalTextChunk());
-            chunks[0].modified_span = chunks[0].original_span = new TextSpan(0, original_string.Length);
+            chunks[0].modified_span = chunks[0].original_span = new TextSpan(0, _original_source.Length);
             chunks.Add(new OriginalTextChunk()); // empty chunk to allow addressing place behind the last char
             chunks[1].modified_span =
-                chunks[1].original_span = new TextSpan(original_string.Length, 0);
+                chunks[1].original_span = new TextSpan(_original_source.Length, 0);
 
             ProcessSource();
-            return modified_source;
+            return _modified_source;
+        }
+        private void LoadTextIfNeeded()
+        {
+            if (_original_source != null)
+                return;
+
+            try
+            {
+                if (document?.TryGetText(out var source_text) ?? false)
+                    ApplyText(source_text);
+            } catch
+            {
+            }
         }
 
         private readonly string processed_marker = "<<EvolveUI processed marker>>";
@@ -211,7 +238,7 @@ namespace OmniSharp.Roslyn
                 }
 
                 // update modified text buffer
-                modified_source = modified_source.WithChanges(new TextChange(new TextSpan(ret.modified_span.Start, ret.original_span.Length), with));
+                _modified_source = _modified_source.WithChanges(new TextChange(new TextSpan(ret.modified_span.Start, ret.original_span.Length), with));
                 Debug.Assert(next == modified_string.Length);
 
                 return ret;

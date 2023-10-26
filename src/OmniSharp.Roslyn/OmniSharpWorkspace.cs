@@ -166,7 +166,10 @@ namespace OmniSharp
 
         public DocumentId TryAddMiscellaneousDocument(string filePath, string language)
         {
-            return TryAddMiscellaneousDocument(filePath, EvolveUI.ShouldProcess(filePath) ? new EvolveUITextLoader(this, filePath) : new OmniSharpTextLoader(filePath), language);
+            var loader = EvolveUI.ShouldProcess(filePath)
+                ? new EvolveUITextLoader(this, filePath)
+                : new OmniSharpTextLoader(filePath);
+            return TryAddMiscellaneousDocument(filePath, loader, language);
         }
 
         public bool TryRemoveMiscellaneousDocument(string filePath)
@@ -270,7 +273,10 @@ namespace OmniSharp
 
         public DocumentId AddDocument(DocumentId documentId, Project project, string filePath, SourceCodeKind sourceCodeKind = SourceCodeKind.Regular)
         {
-            return AddDocument(documentId, project, filePath, new OmniSharpTextLoader(filePath), sourceCodeKind);
+            var loader = EvolveUI.ShouldProcess(filePath)
+                ? new EvolveUITextLoader(this, filePath)
+                : new OmniSharpTextLoader(filePath);
+            return AddDocument(documentId, project, filePath, loader, sourceCodeKind);
         }
 
         internal DocumentId AddDocument(DocumentId documentId, ProjectId projectId, string filePath, TextLoader loader, SourceCodeKind sourceCodeKind = SourceCodeKind.Regular)
@@ -547,7 +553,9 @@ namespace OmniSharp
 
         public void AddAdditionalDocument(ProjectId projectId, string filePath)
         {
-            var loader = new OmniSharpTextLoader(filePath);
+            var loader = EvolveUI.ShouldProcess(filePath)
+                ? new EvolveUITextLoader(this, filePath)
+                : new OmniSharpTextLoader(filePath);
             AddAdditionalDocument(projectId, filePath, loader);
         }
 

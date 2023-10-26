@@ -19,7 +19,8 @@ namespace OmniSharp.Roslyn
     {
         private static readonly Dictionary<DocumentId, EvolveUIMapper> _mappers = new();
 
-        public static bool ShouldProcess(string filepath) => filepath?.EndsWith(".ui", StringComparison.CurrentCultureIgnoreCase) ?? false;
+//        public static bool ShouldProcess(string filepath) => filepath?.EndsWith(".ui", StringComparison.CurrentCultureIgnoreCase) ?? false;
+        public static bool ShouldProcess(string filepath) => filepath?.EndsWith("approot.ui", StringComparison.CurrentCultureIgnoreCase) ?? false;
         public static bool ShouldProcess(Document document) => ShouldProcess(document?.FilePath);
 
         public static EvolveUIMapper GetOrAddMapper(Document document)
@@ -30,7 +31,10 @@ namespace OmniSharp.Roslyn
 
             var mapper = GetMapper(document);
             if(mapper == null)
-                _mappers[document.Id] = mapper = new(document);
+            {
+                mapper = new(document);
+                _mappers[document.Id] = mapper;
+            }
             return mapper;
         }
 
@@ -38,12 +42,14 @@ namespace OmniSharp.Roslyn
         public static int? ConvertOriginalLineColumnToModifiedIndex(Document document, int line, int column, out EvolveUIMapper mapper)
         {
             mapper = GetMapper(document);
+            Debug.Assert(mapper is not { original_source: null });
             return mapper?.ConvertOriginalLineColumnToModifiedIndex(line, column);
         }
 
         public static TextSpan? ConvertOriginalRangeToModifiedSpan(Document document, Range range, out EvolveUIMapper mapper)
         {
             mapper = GetMapper(document);
+            Debug.Assert(mapper is not { original_source: null });
             return mapper?.ConvertOriginalRangeToModifiedSpan(range);
         }
 
@@ -51,6 +57,7 @@ namespace OmniSharp.Roslyn
             out EvolveUIMapper mapper)
         {
             mapper = GetMapper(document);
+            Debug.Assert(mapper is not { original_source: null });
             return mapper?.ConvertOriginalTextSpanToModified(span);
         }
 

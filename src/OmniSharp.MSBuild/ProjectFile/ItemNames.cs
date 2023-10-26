@@ -11,5 +11,6 @@ namespace OmniSharp.MSBuild.ProjectFile
         public const string ProjectCapability = nameof(ProjectCapability);
         public const string ProjectReference = nameof(ProjectReference);
         public const string ReferencePath = nameof(ReferencePath);
+        public const string None = nameof(None);
     }
 }

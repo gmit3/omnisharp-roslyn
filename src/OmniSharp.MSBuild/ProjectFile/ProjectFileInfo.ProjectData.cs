@@ -289,6 +289,9 @@ namespace OmniSharp.MSBuild.ProjectFile
 
                 var sourceFiles = GetFullPaths(
                     projectInstance.GetItems(ItemNames.Compile), filter: FileNameIsNotGenerated);
+                var sourceFiles2 = GetFullPaths(
+                    projectInstance.GetItems(ItemNames.None), filter: FileNameIsEvolveUi);
+                sourceFiles = sourceFiles.AddRange(sourceFiles2);
 
                 var projectReferences = ImmutableArray.CreateBuilder<string>();
                 var projectReferenceAliases = ImmutableDictionary.CreateBuilder<string, string>();
@@ -394,6 +397,8 @@ namespace OmniSharp.MSBuild.ProjectFile
 
             private static bool FileNameIsNotGenerated(string filePath)
                 => !Path.GetFileName(filePath).StartsWith("TemporaryGeneratedFile_", StringComparison.OrdinalIgnoreCase);
+            private static bool FileNameIsEvolveUi(string filePath)
+                => Path.GetFileName(filePath).EndsWith(".ui", StringComparison.OrdinalIgnoreCase);
 
             private static ImmutableArray<string> GetFullPaths(IEnumerable<MSB.Execution.ProjectItemInstance> items, Func<string, bool> filter = null)
             {
