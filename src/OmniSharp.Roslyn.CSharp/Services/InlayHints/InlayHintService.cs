@@ -60,7 +60,7 @@ internal class InlayHintService :
         }
 
         // #startup 5 get inlay hints!!!
-        var mappedSpan = EvolveUI.ConvertOriginalRangeToModifiedSpan(document, request.Location.Range, out var mapper);
+        var mappedSpan = EvolveUIManager.ConvertOriginalRangeToModifiedSpan(document, request.Location.Range, out var mapper);
         SourceText sourceText;
         if (mapper != null)
         {

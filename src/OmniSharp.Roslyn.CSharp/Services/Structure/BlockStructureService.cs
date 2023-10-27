@@ -32,7 +32,7 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
                 return new BlockStructureResponse { Spans = Array.Empty<CodeFoldingBlock>() };
             }
 
-            var mapper = EvolveUI.ShouldProcess(document) ? EvolveUI.GetMapper(document) : null;
+            var mapper = EvolveUIManager.ShouldProcess(document) ? EvolveUIManager.GetMapper(document) : null;
             var text = mapper != null ? mapper.original_source : await document.GetTextAsync();
 
             var options = new OmniSharpBlockStructureOptions(

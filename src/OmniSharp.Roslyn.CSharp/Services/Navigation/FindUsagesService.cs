@@ -40,7 +40,7 @@ namespace OmniSharp.Roslyn.CSharp.Services.Navigation
             }
 
             var semanticModel = await document.GetSemanticModelAsync();
-            int? position = EvolveUI.ConvertOriginalLineColumnToModifiedIndex(document, request.Line, request.Column, out var mapper);
+            int? position = EvolveUIManager.ConvertOriginalLineColumnToModifiedIndex(document, request.Line, request.Column, out var mapper);
             if(!position.HasValue)
             {
                 if (mapper != null)

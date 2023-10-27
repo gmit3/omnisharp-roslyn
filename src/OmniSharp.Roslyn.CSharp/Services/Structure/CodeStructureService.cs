@@ -53,7 +53,7 @@ namespace OmniSharp.Roslyn.CSharp.Services.Structure
 
         private async Task<IReadOnlyList<CodeElement>> GetCodeElementsAsync(Document document)
         {
-            var mapper = EvolveUI.ShouldProcess(document) ? EvolveUI.GetMapper(document) : null;
+            var mapper = EvolveUIManager.ShouldProcess(document) ? EvolveUIManager.GetMapper(document) : null;
             var text = mapper != null ? mapper.original_source : await document.GetTextAsync();
             var syntaxRoot = await document.GetSyntaxRootAsync();
             var semanticModel = await document.GetSemanticModelAsync();

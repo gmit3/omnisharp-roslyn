@@ -15,12 +15,13 @@ using Range = OmniSharp.Models.V2.Range;
 
 namespace OmniSharp.Roslyn
 {
-    internal class EvolveUI
+    internal class EvolveUIManager
     {
         private static readonly Dictionary<DocumentId, EvolveUIMapper> _mappers = new();
 
 //        public static bool ShouldProcess(string filepath) => filepath?.EndsWith(".ui", StringComparison.CurrentCultureIgnoreCase) ?? false;
-        public static bool ShouldProcess(string filepath) => filepath?.EndsWith("approot.ui", StringComparison.CurrentCultureIgnoreCase) ?? false;
+//        public static bool ShouldProcess(string filepath) => filepath?.EndsWith("approot.ui", StringComparison.CurrentCultureIgnoreCase) ?? false;
+        public static bool ShouldProcess(string filepath) => filepath?.EndsWith("app.ui", StringComparison.CurrentCultureIgnoreCase) ?? false;
         public static bool ShouldProcess(Document document) => ShouldProcess(document?.FilePath);
 
         public static EvolveUIMapper GetOrAddMapper(Document document)

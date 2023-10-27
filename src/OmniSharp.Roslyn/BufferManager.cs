@@ -80,7 +80,7 @@ namespace OmniSharp.Roslyn
                             continue;
                         }
 
-                        solution = document.WithText(EvolveUI.ApplyText(document, sourceText)).Project.Solution;
+                        solution = document.WithText(EvolveUIManager.ApplyText(document, sourceText)).Project.Solution;
                         _logger.LogDebug("Updating file {0} with new text:\n{1}", request.FileName, sourceText);
                     }
                 }
@@ -131,8 +131,8 @@ namespace OmniSharp.Roslyn
                 // initial case
                 _logger.LogDebug("Adding transient file for {0}\n{1}", request.FileName, buffer);
                 bool succeeded = TryAddTransientDocument(request.FileName, buffer, out var documentId);
-                if (succeeded && documentId != null && EvolveUI.ShouldProcess(request.FileName))
-                    EvolveUI.GetMapper(documentId)?.ApplyText(SourceText.From(buffer));
+                if (succeeded && documentId != null && EvolveUIManager.ShouldProcess(request.FileName))
+                    EvolveUIManager.GetMapper(documentId)?.ApplyText(SourceText.From(buffer));
             }
         }
 

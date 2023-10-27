@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EvolveParser\EvolveParser.csproj" />
     <ProjectReference Include="..\OmniSharp.Abstractions\OmniSharp.Abstractions.csproj" />
     <ProjectReference Include="..\OmniSharp.Shared\OmniSharp.Shared.csproj" />
   </ItemGroup>

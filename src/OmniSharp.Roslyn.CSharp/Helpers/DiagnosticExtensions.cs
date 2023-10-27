@@ -31,7 +31,7 @@ namespace OmniSharp.Helpers
                     cached_mapper.TryGetTarget(out mapper);
                 if (mapper == null)
                 {
-                    mapper = EvolveUI.GetMapper(documentId);
+                    mapper = EvolveUIManager.GetMapper(documentId);
                     cached_documentid = mapper?.document_id;
                     cached_mapper = new WeakReference<EvolveUIMapper>(mapper);
                 }

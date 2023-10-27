@@ -68,7 +68,7 @@ namespace OmniSharp.Roslyn.CSharp.Services.SemanticHighlight
                 textSpan = new TextSpan(0, text.Length);
             }
 
-            var mappedSpan = EvolveUI.ConvertOriginalTextSpanToModified(document, textSpan, out var mapper);
+            var mappedSpan = EvolveUIManager.ConvertOriginalTextSpanToModified(document, textSpan, out var mapper);
             if(mapper == null)
             {
                 results.AddRange((await Classifier.GetClassifiedSpansAsync(highlightDocument, textSpan))

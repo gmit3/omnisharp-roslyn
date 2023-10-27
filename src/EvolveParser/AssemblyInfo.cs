@@ -1,3 +1,3 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("EvolveUI.Test")]
+//[assembly: InternalsVisibleTo("EvolveUI.Test")]

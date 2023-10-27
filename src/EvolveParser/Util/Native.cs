@@ -1,5 +1,7 @@
 // #define EVOLVE_UI_MEMORY_PARANOID
 
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 #if UNITY_64
@@ -158,9 +160,11 @@ namespace EvolveUI.Native {
         }
 
         public static void MemClear(void* ptr, long size) {
-            NativeMemory.Clear(ptr, (UIntPtr)size);    
+            // NativeMemory.Clear(ptr, (UIntPtr)size);
+            if(size > 0)
+                Unsafe.InitBlockUnaligned(ptr, 0, (uint)size);
         }
-        
+
         public static void* AlignedMalloc(long size, long alignment) {
             // return ElectricAllocator.Allocate((int)size);
             return NativeMemory.AlignedAlloc((nuint)size, (nuint)alignment);
@@ -168,7 +172,9 @@ namespace EvolveUI.Native {
 
         public static void MemCpy(void* dst, void* src, long size) {
             // note the argument order is reversed!
-            NativeMemory.Copy(src, dst, (nuint)size);
+            // NativeMemory.Copy(src, dst, (nuint)size);
+            if(size > 0)
+                Unsafe.CopyBlockUnaligned(dst, src, (uint)size);
         }
 
         public static void AlignedFree(void* ptr, long alignment) {

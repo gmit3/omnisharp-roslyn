@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFrameworks>net6.0</TargetFrameworks>
+        <PlatformTarget>AnyCPU</PlatformTarget>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <OutputType>Exe</OutputType>
+        <OutputType>Library</OutputType>
     </PropertyGroup>
 
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
@@ -17,6 +18,18 @@
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
         <DefineConstants>OS_MAC</DefineConstants>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0|AnyCPU'">
+      <NoWarn>CS0649</NoWarn>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
+      <NoWarn>CS0649</NoWarn>
+    </PropertyGroup>
+    <ItemGroup>
+      <Compile Remove="Program.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="Program.cs" />
+    </ItemGroup>
     
     
 </Project>

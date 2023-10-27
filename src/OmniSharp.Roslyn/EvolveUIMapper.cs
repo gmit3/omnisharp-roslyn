@@ -15,7 +15,7 @@ using Range = OmniSharp.Models.V2.Range;
 namespace OmniSharp.Roslyn
 {
     [DebuggerDisplay("{GetDebuggerDisplay(),nq}")]
-    internal class EvolveUIMapper
+    internal partial class EvolveUIMapper
     {
         private Func<Document> GetDocument;
         public Document document => GetDocument != null ? GetDocument() : null;
@@ -126,20 +126,6 @@ namespace OmniSharp.Roslyn
             } catch
             {
             }
-        }
-
-        private readonly string processed_marker = "<<EvolveUI processed marker>>";
-        private void ProcessSource()
-        {
-            Debug.Assert(!original_string.Contains(processed_marker));
-
-            // #TODO: inserting the same single point won't work yet
-            InsertLine(0, $"// {processed_marker} blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip");
-//             InsertLine(0, "// blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip");
-//             InsertLine(0, "// blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip blip");
-            Replace("template AppRoot : AppRoot", "class __evolveUI__AppRoot");
-            ReplaceAll("state", "");
-            ReplaceAll("[@", "\"xx-style-xx\"", "]");
         }
 
         public void TextChanged()

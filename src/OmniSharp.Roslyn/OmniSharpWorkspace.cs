@@ -166,7 +166,7 @@ namespace OmniSharp
 
         public DocumentId TryAddMiscellaneousDocument(string filePath, string language)
         {
-            var loader = EvolveUI.ShouldProcess(filePath)
+            var loader = EvolveUIManager.ShouldProcess(filePath)
                 ? new EvolveUITextLoader(this, filePath)
                 : new OmniSharpTextLoader(filePath);
             return TryAddMiscellaneousDocument(filePath, loader, language);
@@ -273,7 +273,7 @@ namespace OmniSharp
 
         public DocumentId AddDocument(DocumentId documentId, Project project, string filePath, SourceCodeKind sourceCodeKind = SourceCodeKind.Regular)
         {
-            var loader = EvolveUI.ShouldProcess(filePath)
+            var loader = EvolveUIManager.ShouldProcess(filePath)
                 ? new EvolveUITextLoader(this, filePath)
                 : new OmniSharpTextLoader(filePath);
             return AddDocument(documentId, project, filePath, loader, sourceCodeKind);
@@ -553,7 +553,7 @@ namespace OmniSharp
 
         public void AddAdditionalDocument(ProjectId projectId, string filePath)
         {
-            var loader = EvolveUI.ShouldProcess(filePath)
+            var loader = EvolveUIManager.ShouldProcess(filePath)
                 ? new EvolveUITextLoader(this, filePath)
                 : new OmniSharpTextLoader(filePath);
             AddAdditionalDocument(projectId, filePath, loader);
@@ -609,17 +609,17 @@ namespace OmniSharp
         protected new void OnDocumentAdded(DocumentInfo documentInfo)
         {
             base.OnDocumentAdded(documentInfo);
-            EvolveUI.OnDocumentAdded(CurrentSolution?.GetDocument(documentInfo?.Id ?? null) ?? null);
+            EvolveUIManager.OnDocumentAdded(CurrentSolution?.GetDocument(documentInfo?.Id ?? null) ?? null);
         }
         protected override void OnDocumentClosing(DocumentId documentId)
         {
-            EvolveUI.OnDocumentClosing(documentId);
+            EvolveUIManager.OnDocumentClosing(documentId);
             base.OnDocumentClosing(documentId);
         }
         protected override void OnDocumentTextChanged(Document document)
         {
             base.OnDocumentTextChanged(document);
-            EvolveUI.OnDocumentTextChanged(document);
+            EvolveUIManager.OnDocumentTextChanged(document);
         }
 
     }

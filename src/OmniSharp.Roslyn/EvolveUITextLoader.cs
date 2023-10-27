@@ -19,7 +19,7 @@ namespace OmniSharp.Roslyn
         public override Task<TextAndVersion> LoadTextAndVersionAsync(LoadTextOptions options, CancellationToken cancellationToken)
         {
             var doc = workspace?.GetDocument(filepath);
-            mapper ??= EvolveUI.GetOrAddMapper(doc);
+            mapper ??= EvolveUIManager.GetOrAddMapper(doc);
 
             var ret = base.LoadTextAndVersionAsync(options, cancellationToken);
             var tv = ret.Result;
