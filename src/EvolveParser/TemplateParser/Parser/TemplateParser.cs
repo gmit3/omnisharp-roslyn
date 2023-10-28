@@ -16,7 +16,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct TemplateParseResult {
+    public struct TemplateParseResult {
 
 #if UNITY_64
         public HardErrorInfo[] errors;
@@ -33,7 +33,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal unsafe ref partial struct TemplateParser {
+    public unsafe ref partial struct TemplateParser {
 
         private ScopedTempAllocator scopedAllocator;
 
@@ -498,7 +498,7 @@ namespace EvolveUI.Parsing {
             return true;
         }
 
-        internal enum ErrorLocationAdjustment {
+        public enum ErrorLocationAdjustment {
 
             None,
             TokenEnd,
@@ -671,7 +671,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct HardErrorInfo {
+    public struct HardErrorInfo {
 
         public int location;
         public DiagnosticError error;

@@ -7,7 +7,7 @@ namespace EvolveUI.Parsing {
     /// <summary>
     /// Not responsible for memory!
     /// </summary>
-    internal partial struct ExpressionTree {
+    public partial struct ExpressionTree {
 
         public FixedCharacterSpan source;
         public CheckedArray<Token> nonTrivialTokens;
@@ -133,14 +133,14 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum VisitorAction {
+    public enum VisitorAction {
 
         Visit,
         DoNotVisit
 
     }
 
-    internal partial interface IExpressionVisitor { }
+    public partial interface IExpressionVisitor { }
 
     internal unsafe ref partial struct ExpressionPrintingVisitor {
 

@@ -1,6 +1,5 @@
 namespace EvolveUI.Parsing {
-
-    internal enum HelpType {
+    public enum HelpType {
 
         None,
         ElementTagsRequireAnArgumentList,

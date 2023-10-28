@@ -13,7 +13,7 @@ namespace EvolveUI.Parsing {
 
     [DebuggerDisplay("{GetDebugString()}")]
     [StructLayout(LayoutKind.Sequential)]
-    internal struct UntypedTemplateNode {
+    public struct UntypedTemplateNode {
 
         public TemplateNodeMeta meta;
         private UntypedTemplateNodeData data;
@@ -34,19 +34,19 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal unsafe struct UntypedTemplateNodeData {
+    public unsafe struct UntypedTemplateNodeData {
 
         public fixed byte bytes[32]; // largest size right now 
 
     }
 
-    internal interface ITemplateNode {
+    public interface ITemplateNode {
 
         TemplateNodeType NodeType { get; }
 
     }
 
-    internal struct NodeIndex<T> where T : unmanaged, ITemplateNode {
+    public struct NodeIndex<T> where T : unmanaged, ITemplateNode {
 
         public int id;
 
@@ -69,7 +69,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct NodeIndex {
+    public struct NodeIndex {
 
         public int id;
 
@@ -82,7 +82,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct NodeRange {
+    public struct NodeRange {
 
         public ushort start;
         public ushort length;
@@ -102,7 +102,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct NodeRange<T> where T : unmanaged, ITemplateNode {
+    public struct NodeRange<T> where T : unmanaged, ITemplateNode {
 
         public ushort start;
         public ushort length;
@@ -120,7 +120,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum ScopeModifier {
+    public enum ScopeModifier {
 
         None,
         Destructive,
@@ -128,7 +128,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct NodeRangeIndex {
+    public struct NodeRangeIndex {
 
         public int index;
 
@@ -138,7 +138,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct NodeRangeIndex<T> where T : unmanaged, ITemplateNode {
+    public struct NodeRangeIndex<T> where T : unmanaged, ITemplateNode {
 
         public int index;
 
@@ -150,7 +150,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal unsafe struct TemplateNodeMeta {
+    public unsafe struct TemplateNodeMeta {
 
         public TemplateNodeType nodeType;
         public ushort nodeIndexShort;
@@ -169,7 +169,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateBlockNode : ITemplateNode {
+    public struct TemplateBlockNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NodeRange statements;
@@ -179,7 +179,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateSwitchStatement : ITemplateNode {
+    public struct TemplateSwitchStatement : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public ExpressionIndex condition;
@@ -191,7 +191,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateIfStatement : ITemplateNode {
+    public struct TemplateIfStatement : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public ExpressionIndex condition;
@@ -208,7 +208,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct StyleListNode : ITemplateNode {
+    public struct StyleListNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public ExpressionRange<ResolveIdExpression> styleIds;
@@ -218,7 +218,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ElementNode : ITemplateNode, IPrintableTemplateNode {
+    public struct ElementNode : ITemplateNode, IPrintableTemplateNode {
 
         public TemplateNodeMeta meta;
         public QualifiedIdentifier qualifiedName;
@@ -238,7 +238,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateElementAssignment : ITemplateNode {
+    public struct TemplateElementAssignment : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public int identifierLocation;
@@ -246,7 +246,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum SlotType {
+    public enum SlotType {
 
         Invalid,
         Named,
@@ -256,7 +256,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateSlotSignature : ITemplateNode {
+    public struct TemplateSlotSignature : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public SlotType slotType;
@@ -268,7 +268,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct RepeatNode : ITemplateNode {
+    public struct RepeatNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public ExpressionIndex<Identifier> itemIdentifier;
@@ -282,14 +282,14 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateFunctionSignature : ITemplateNode {
+    public struct TemplateFunctionSignature : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public TemplateNodeType NodeType => TemplateNodeType.TemplateFunctionSignature;
 
     }
 
-    internal enum TemplateFnParameterModifier {
+    public enum TemplateFnParameterModifier {
 
         None,
         Ref,
@@ -298,7 +298,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateFunctionParameter : ITemplateNode {
+    public struct TemplateFunctionParameter : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public TemplateFnParameterModifier modifier;
@@ -311,7 +311,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct LocalTemplateFn : ITemplateNode, IPrintableTemplateNode {
+    public struct LocalTemplateFn : ITemplateNode, IPrintableTemplateNode {
 
         public TemplateNodeMeta meta;
         public bool isStatic;
@@ -330,7 +330,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct CreateSection : ITemplateNode {
+    public struct CreateSection : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public ExpressionRange statements;
@@ -340,7 +340,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct EnableSection : ITemplateNode {
+    public struct EnableSection : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public ExpressionRange statements;
@@ -350,7 +350,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct RunSection : ITemplateNode {
+    public struct RunSection : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public ExpressionRange statements;
@@ -360,7 +360,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct MarkerNode : ITemplateNode {
+    public struct MarkerNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NodeIndex<TemplateBlockNode> block;
@@ -372,7 +372,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TeleportNode : ITemplateNode {
+    public struct TeleportNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NodeIndex<TemplateBlockNode> block;
@@ -384,7 +384,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct PropertyBindingNode : ITemplateNode {
+    public struct PropertyBindingNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public TemplateArgumentModifier modifier;
@@ -395,7 +395,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum TemplateArgumentModifier {
+    public enum TemplateArgumentModifier {
 
         None = 0,
         Sync,
@@ -404,7 +404,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct DecoratorArgumentNode : ITemplateNode {
+    public struct DecoratorArgumentNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NonTrivialTokenLocation name;
@@ -416,7 +416,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ComputedProperty : ITemplateNode {
+    public struct ComputedProperty : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public ExpressionIndex expression;
@@ -429,7 +429,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateParameter : ITemplateNode {
+    public struct TemplateParameter : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public ArgumentModifier modifier;
@@ -445,7 +445,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct FromMapping : ITemplateNode {
+    public struct FromMapping : ITemplateNode {
 
         public TemplateNodeMeta meta;
 
@@ -457,7 +457,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct OnChangeBindingNode : ITemplateNode {
+    public struct OnChangeBindingNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NonTrivialTokenLocation identifier;
@@ -468,7 +468,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct InputModifiers {
+    public struct InputModifiers {
 
         public bool requireFocus;
         public InputPhase eventPhase;
@@ -477,7 +477,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct LifeCycleEventNode : ITemplateNode {
+    public struct LifeCycleEventNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public LifeCycleEventType eventType;
@@ -488,7 +488,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct InputHandlerNode : ITemplateNode {
+    public struct InputHandlerNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public ExpressionIndex expression;
@@ -507,7 +507,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct InstanceStyleNode : ITemplateNode {
+    public struct InstanceStyleNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NonTrivialTokenLocation stylePropertyName;
@@ -519,7 +519,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct AttributeAssignment : ITemplateNode {
+    public struct AttributeAssignment : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NonTrivialTokenRange key;
@@ -530,7 +530,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct QualifiedIdentifier {
+    public struct QualifiedIdentifier {
 
         public NonTrivialTokenLocation moduleName;
         public NonTrivialTokenLocation tagName;
@@ -544,7 +544,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TypedQualifiedIdentifierNode : ITemplateNode {
+    public struct TypedQualifiedIdentifierNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
 
@@ -557,7 +557,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct Extrusion : ITemplateNode, IPrintableTemplateNode {
+    public struct Extrusion : ITemplateNode, IPrintableTemplateNode {
 
         public TemplateNodeMeta meta;
         public NonTrivialTokenLocation identifierLocation;
@@ -577,7 +577,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct KeyedArgument : ITemplateNode {
+    public struct KeyedArgument : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public ExpressionIndex expression;
@@ -586,7 +586,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct DecoratorNode : ITemplateNode, IPrintableTemplateNode {
+    public struct DecoratorNode : ITemplateNode, IPrintableTemplateNode {
 
         public TemplateNodeMeta meta;
         public NodeRange<DecoratorArgumentNode> arguments;
@@ -603,7 +603,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateSignatureNode : ITemplateNode {
+    public struct TemplateSignatureNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NodeRange arguments;
@@ -614,7 +614,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateConstDeclaration : ITemplateNode {
+    public struct TemplateConstDeclaration : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NonTrivialTokenLocation identifierLocation;
@@ -625,7 +625,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateVariableDeclaration : ITemplateNode {
+    public struct TemplateVariableDeclaration : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NonTrivialTokenLocation identifierLocation;
@@ -636,7 +636,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateSpawnList : ITemplateNode {
+    public struct TemplateSpawnList : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NodeRange<TypedQualifiedIdentifierNode> spawnList;
@@ -645,7 +645,7 @@ namespace EvolveUI.Parsing {
     }
     
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateStateDeclaration : ITemplateNode {
+    public struct TemplateStateDeclaration : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NonTrivialTokenLocation identifierLocation;
@@ -658,7 +658,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct MethodDeclaration : ITemplateNode {
+    public struct MethodDeclaration : ITemplateNode {
 
         public TemplateNodeMeta meta;
 
@@ -675,7 +675,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct RepeatParameter : ITemplateNode {
+    public struct RepeatParameter : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public RepeatParameterName key;
@@ -686,7 +686,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct RenderSlotNode : ITemplateNode {
+    public struct RenderSlotNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NonTrivialTokenLocation nameLocation;
@@ -701,7 +701,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct RenderPortalNode : ITemplateNode {
+    public struct RenderPortalNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public ExpressionIndex expression;
@@ -711,7 +711,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct RenderMarkerNode : ITemplateNode {
+    public struct RenderMarkerNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public ExpressionIndex expression;
@@ -721,7 +721,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateSwitchSection : ITemplateNode {
+    public struct TemplateSwitchSection : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NodeRange<TemplateSwitchLabel> labels;
@@ -732,7 +732,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TemplateSwitchLabel : ITemplateNode {
+    public struct TemplateSwitchLabel : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public ExpressionIndex expression;
@@ -743,7 +743,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct SlotOverrideNode : ITemplateNode {
+    public struct SlotOverrideNode : ITemplateNode {
 
         public TemplateNodeMeta meta;
         public NodeRange<Extrusion> extrusions;

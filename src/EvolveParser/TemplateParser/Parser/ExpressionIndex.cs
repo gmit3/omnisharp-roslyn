@@ -1,8 +1,7 @@
 using System.Diagnostics;
 
 namespace EvolveUI.Parsing {
-
-    internal struct ExpressionIndex {
+    public struct ExpressionIndex {
 
         public int id;
 
@@ -22,7 +21,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct ExpressionIndex<T> where T : unmanaged, IExpressionNode {
+    public struct ExpressionIndex<T> where T : unmanaged, IExpressionNode {
 
         public int id;
 
@@ -48,7 +47,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct ExpressionRange<T> where T : unmanaged, IExpressionNode {
+    public struct ExpressionRange<T> where T : unmanaged, IExpressionNode {
 
         public ushort start;
         public ushort length;
@@ -73,7 +72,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct ExpressionRange {
+    public struct ExpressionRange {
 
         public ushort start;
         public ushort length;
@@ -91,7 +90,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct ExpressionRangeIndex {
+    public struct ExpressionRangeIndex {
 
         public int index;
 
@@ -101,7 +100,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct ExpressionRangeIndex<T> where T : unmanaged, IExpressionNode {
+    public struct ExpressionRangeIndex<T> where T : unmanaged, IExpressionNode {
 
         public int index;
 

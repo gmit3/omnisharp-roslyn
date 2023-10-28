@@ -6,8 +6,7 @@ using EvolveUI.Util;
 using EvolveUI.Util.Unsafe;
 
 namespace EvolveUI.Parsing {
-
-    internal enum ExpressionNodeType : ushort {
+    public enum ExpressionNodeType : ushort {
 
         Invalid = 0,
         Literal,
@@ -112,7 +111,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum IdentifierType {
+    public enum IdentifierType {
 
         Invalid,
         Keyword,
@@ -126,7 +125,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ExpressionNodeHeader {
+    public struct ExpressionNodeHeader {
 
         public ushort nodeIndexShort;
         public ExpressionNodeType type;
@@ -144,7 +143,7 @@ namespace EvolveUI.Parsing {
 
     [DebuggerDisplay("{DebugDisplay()}")]
     [StructLayout(LayoutKind.Sequential)]
-    internal unsafe struct UntypedExpressionNode {
+    public unsafe struct UntypedExpressionNode {
 
         public ExpressionNodeHeader meta;
         private ExpressionNodeData data;
@@ -162,7 +161,7 @@ namespace EvolveUI.Parsing {
     internal interface IVepProvider { }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct BlockExpression : IExpressionNode {
+    public struct BlockExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -174,7 +173,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ReturnStatement : IExpressionNode {
+    public struct ReturnStatement : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -185,7 +184,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct UsingStatement : IExpressionNode, IVepProvider {
+    public struct UsingStatement : IExpressionNode, IVepProvider {
 
         public ExpressionNodeHeader meta;
 
@@ -197,7 +196,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct IfStatement : IExpressionNode {
+    public struct IfStatement : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -210,7 +209,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct SwitchExpression : IExpressionNode {
+    public struct SwitchExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -222,7 +221,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct SwitchStatement : IExpressionNode {
+    public struct SwitchStatement : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -238,7 +237,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct SwitchArm : IExpressionNode {
+    public struct SwitchArm : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -251,7 +250,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct SwitchLabel : IExpressionNode {
+    public struct SwitchLabel : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -263,7 +262,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct SwitchSection : IExpressionNode {
+    public struct SwitchSection : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -275,7 +274,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct WhileLoop : IExpressionNode {
+    public struct WhileLoop : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -288,7 +287,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ForLoop : IExpressionNode, IVepProvider {
+    public struct ForLoop : IExpressionNode, IVepProvider {
 
         public ExpressionNodeHeader meta;
 
@@ -302,7 +301,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ForeachLoop : IExpressionNode, IVepProvider {
+    public struct ForeachLoop : IExpressionNode, IVepProvider {
 
         public ExpressionNodeHeader meta;
 
@@ -315,7 +314,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct BreakStatement : IExpressionNode {
+    public struct BreakStatement : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -324,7 +323,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ContinueStatement : IExpressionNode {
+    public struct ContinueStatement : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -333,7 +332,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct GoToStatement : IExpressionNode {
+    public struct GoToStatement : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -347,7 +346,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct YieldStatement : IExpressionNode {
+    public struct YieldStatement : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -360,7 +359,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TernaryExpression : IExpressionNode {
+    public struct TernaryExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -373,7 +372,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct Argument : IExpressionNode, IVepProvider /* not sure if this is really a vep provider */ {
+    public struct Argument : IExpressionNode, IVepProvider /* not sure if this is really a vep provider */ {
 
         public enum ArgumentModifier {
 
@@ -394,7 +393,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ThrowStatement : IExpressionNode {
+    public struct ThrowStatement : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -405,7 +404,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct RangeExpression : IExpressionNode {
+    public struct RangeExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -419,7 +418,7 @@ namespace EvolveUI.Parsing {
 
     // in the specific case it can expose veps
     [StructLayout(LayoutKind.Sequential)]
-    internal struct Catch : IExpressionNode, IVepProvider {
+    public struct Catch : IExpressionNode, IVepProvider {
 
         public ExpressionNodeHeader meta;
 
@@ -435,7 +434,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TryCatchFinally : IExpressionNode {
+    public struct TryCatchFinally : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -447,7 +446,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum BinaryPatternOp {
+    public enum BinaryPatternOp {
 
         Invalid,
         And,
@@ -456,7 +455,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct BinaryPattern : IExpressionNode {
+    public struct BinaryPattern : IExpressionNode {
 
         public ExpressionNodeHeader meta;
         public BinaryPatternOp op;
@@ -467,7 +466,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum RelationalPatternOp {
+    public enum RelationalPatternOp {
 
         Invalid,
         NotEqual,
@@ -480,7 +479,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct RelationalPattern : IExpressionNode {
+    public struct RelationalPattern : IExpressionNode {
 
         public ExpressionNodeHeader meta;
         public RelationalPatternOp op;
@@ -491,7 +490,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct DiscardPattern : IExpressionNode {
+    public struct DiscardPattern : IExpressionNode {
 
         public ExpressionNodeHeader meta;
         public NonTrivialTokenLocation location;
@@ -500,7 +499,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ConstantPattern : IExpressionNode {
+    public struct ConstantPattern : IExpressionNode {
 
         public ExpressionNodeHeader meta;
         public ExpressionIndex expression;
@@ -509,7 +508,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct VariableDesignation : IExpressionNode {
+    public struct VariableDesignation : IExpressionNode {
 
         public ExpressionNodeHeader meta;
         public bool isDiscard;
@@ -527,7 +526,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct DeclarationPattern : IExpressionNode {
+    public struct DeclarationPattern : IExpressionNode {
 
         public ExpressionNodeHeader meta;
         public ExpressionIndex<TypePath> typePath;
@@ -538,7 +537,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct VarPattern : IExpressionNode {
+    public struct VarPattern : IExpressionNode {
 
         public ExpressionNodeHeader meta;
         public ExpressionIndex<VariableDesignation> designation;
@@ -548,7 +547,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TypePattern : IExpressionNode {
+    public struct TypePattern : IExpressionNode {
 
         public ExpressionNodeHeader meta;
         public ExpressionIndex<TypePath> typePath;
@@ -558,7 +557,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct UnaryNotPattern : IExpressionNode {
+    public struct UnaryNotPattern : IExpressionNode {
 
         public ExpressionNodeHeader meta;
         public ExpressionIndex pattern;
@@ -568,7 +567,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct LockStatement : IExpressionNode {
+    public struct LockStatement : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -580,7 +579,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct BracketExpression : IExpressionNode {
+    public struct BracketExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -592,7 +591,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct DefaultExpression : IExpressionNode {
+    public struct DefaultExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -603,7 +602,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct SizeOfExpression : IExpressionNode {
+    public struct SizeOfExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -614,7 +613,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct NameOfExpression : IExpressionNode {
+    public struct NameOfExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -626,7 +625,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct AnonymousMethodExpression : IExpressionNode {
+    public struct AnonymousMethodExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -635,7 +634,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct CheckedExpression : IExpressionNode {
+    public struct CheckedExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -646,7 +645,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct BaseAccessExpression : IExpressionNode {
+    public struct BaseAccessExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -660,7 +659,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TupleExpression : IExpressionNode {
+    public struct TupleExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -671,7 +670,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct Identifier : IExpressionNode, IPrintableExpressionNode {
+    public struct Identifier : IExpressionNode, IPrintableExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -697,7 +696,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TypeModifier : IExpressionNode {
+    public struct TypeModifier : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -710,7 +709,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TypePath : IExpressionNode, IPrintableExpressionNode {
+    public struct TypePath : IExpressionNode, IPrintableExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -727,7 +726,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TypeNamePart : IExpressionNode {
+    public struct TypeNamePart : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -753,7 +752,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct DirectCast : IExpressionNode {
+    public struct DirectCast : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -765,7 +764,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct AssignmentExpression : IExpressionNode {
+    public struct AssignmentExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -780,7 +779,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ParenExpression : IExpressionNode {
+    public struct ParenExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -791,7 +790,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct MethodInvocation : IExpressionNode {
+    public struct MethodInvocation : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -802,7 +801,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct IncrementDecrement : IExpressionNode {
+    public struct IncrementDecrement : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -811,7 +810,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum PrimaryExpressionPartType {
+    public enum PrimaryExpressionPartType {
 
         MemberAccess,
         MethodInvocation,
@@ -820,7 +819,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct PrimaryExpressionPart : IExpressionNode {
+    public struct PrimaryExpressionPart : IExpressionNode {
 
         public ExpressionNodeHeader meta;
         public PrimaryExpressionPartType partType;
@@ -832,7 +831,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct NewExpression : IExpressionNode {
+    public struct NewExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
         public ExpressionIndex<TypePath> typePath;
@@ -845,7 +844,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ArrayCreationRank : IExpressionNode {
+    public struct ArrayCreationRank : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -857,7 +856,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct PrimaryExpression : IExpressionNode {
+    public struct PrimaryExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -871,7 +870,7 @@ namespace EvolveUI.Parsing {
 
     // these are the identifiers that start expression chains, ie the ones we need to do identifier resolution on
     [StructLayout(LayoutKind.Sequential)]
-    internal struct PrimaryIdentifier : IExpressionNode, IPrintableExpressionNode {
+    public struct PrimaryIdentifier : IExpressionNode, IPrintableExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -890,7 +889,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct UnboundTypeNameExpression : IExpressionNode {
+    public struct UnboundTypeNameExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -909,7 +908,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TypeOfExpression : IExpressionNode {
+    public struct TypeOfExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -922,7 +921,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct PrefixUnaryExpression : IExpressionNode {
+    public struct PrefixUnaryExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -934,7 +933,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct LambdaExpression : IExpressionNode {
+    public struct LambdaExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -948,7 +947,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal unsafe struct BinaryExpression : IExpressionNode, IPrintableExpressionNode {
+    public unsafe struct BinaryExpression : IExpressionNode, IPrintableExpressionNode {
 
         public ExpressionNodeHeader meta;
         public BinaryOperatorType operatorType;
@@ -965,7 +964,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct IsTypeExpression : IExpressionNode {
+    public struct IsTypeExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -979,7 +978,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct IsNullExpression : IExpressionNode {
+    public struct IsNullExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -989,7 +988,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TypePatternArm : IExpressionNode, IVepProvider {
+    public struct TypePatternArm : IExpressionNode, IVepProvider {
 
         public ExpressionNodeHeader meta;
         public ExpressionIndex expression;
@@ -1000,7 +999,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TypeArgumentList : IExpressionNode {
+    public struct TypeArgumentList : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -1013,7 +1012,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct MemberAccess : IExpressionNode {
+    public struct MemberAccess : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -1029,7 +1028,7 @@ namespace EvolveUI.Parsing {
 
     // maybe just merge w/ VariableInitializer & add a type field if needed
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ArrayInitializer : IExpressionNode {
+    public struct ArrayInitializer : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -1040,7 +1039,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct LocalFunctionDefinition : IExpressionNode {
+    public struct LocalFunctionDefinition : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -1056,7 +1055,7 @@ namespace EvolveUI.Parsing {
     }
 
     [Flags]
-    internal enum FunctionTypeModifiers {
+    public enum FunctionTypeModifiers {
 
         None,
         Async = 1 << 0,
@@ -1066,7 +1065,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct VariableDeclaration : IExpressionNode, IVepProvider {
+    public struct VariableDeclaration : IExpressionNode, IVepProvider {
 
         public ExpressionNodeHeader meta;
         public VariableModifiers modifiers;
@@ -1079,14 +1078,14 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum VariableModifiers {
+    public enum VariableModifiers {
 
         None,
         Ref,
 
     }
 
-    internal enum VariableDeclarationType {
+    public enum VariableDeclarationType {
 
         Invalid,
         Const,
@@ -1095,7 +1094,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum ArgumentModifier {
+    public enum ArgumentModifier {
 
         None,
         Ref,
@@ -1105,7 +1104,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct LiteralAccess : IExpressionNode {
+    public struct LiteralAccess : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -1119,7 +1118,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct Literal : IExpressionNode, IPrintableExpressionNode {
+    public struct Literal : IExpressionNode, IPrintableExpressionNode {
 
         public ExpressionNodeHeader meta;
         public LiteralType literalType;
@@ -1133,7 +1132,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct StringInterpolation : IExpressionNode {
+    public struct StringInterpolation : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -1143,7 +1142,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct StringInterpolationPart : IExpressionNode {
+    public struct StringInterpolationPart : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -1155,7 +1154,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum ElementInitializerType {
+    public enum ElementInitializerType {
 
         PropertyMember,
         FieldMember,
@@ -1166,7 +1165,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ElementInitializer : IExpressionNode {
+    public struct ElementInitializer : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -1180,7 +1179,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct MemberInitializer : IExpressionNode, IPrintableExpressionNode {
+    public struct MemberInitializer : IExpressionNode, IPrintableExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -1200,7 +1199,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct CollectionInitializer : IExpressionNode {
+    public struct CollectionInitializer : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -1211,7 +1210,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ObjectInitializer : IExpressionNode {
+    public struct ObjectInitializer : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -1222,7 +1221,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ResolveIdExpression : IExpressionNode {
+    public struct ResolveIdExpression : IExpressionNode {
 
         public ExpressionNodeHeader meta;
 
@@ -1234,7 +1233,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct Parameter : IExpressionNode, IVepProvider {
+    public struct Parameter : IExpressionNode, IVepProvider {
 
         public ExpressionNodeHeader meta;
 

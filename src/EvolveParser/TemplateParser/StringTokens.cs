@@ -3,9 +3,7 @@ using EvolveUI.Util;
 using EvolveUI.Util.Unsafe;
 
 namespace EvolveUI.Parsing {
-
-
-    internal enum RuntimeKeyword {
+    public enum RuntimeKeyword {
 
         None,
         DollarRuntime,
@@ -24,7 +22,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum SimpleTypeName {
+    public enum SimpleTypeName {
 
         None,
         Bool,
@@ -44,7 +42,7 @@ namespace EvolveUI.Parsing {
         
     }
 
-    internal enum TemplateKeyword {
+    public enum TemplateKeyword {
 
         Invalid = 0,
 

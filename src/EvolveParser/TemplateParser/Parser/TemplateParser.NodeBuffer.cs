@@ -4,8 +4,7 @@ using EvolveUI.Util;
 using EvolveUI.Util.Unsafe;
 
 namespace EvolveUI.Parsing {
-
-    internal partial struct TemplateParser {
+    public partial struct TemplateParser {
 
         internal unsafe struct TemplateNodeBuffer : IDisposable {
 

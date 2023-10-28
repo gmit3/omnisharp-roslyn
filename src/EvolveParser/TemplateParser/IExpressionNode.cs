@@ -1,6 +1,5 @@
 namespace EvolveUI.Parsing {
-
-    internal interface IExpressionNode {
+    public interface IExpressionNode {
          
         ExpressionNodeType NodeType { get; }
 

@@ -1,6 +1,5 @@
 namespace EvolveUI.Parsing {
-
-    internal enum SymbolType {
+    public enum SymbolType {
 
         Invalid = 0,
         BooleanAnd,

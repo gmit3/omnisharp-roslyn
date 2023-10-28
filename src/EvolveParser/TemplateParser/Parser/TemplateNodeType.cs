@@ -1,6 +1,5 @@
 namespace EvolveUI.Parsing {
-
-    internal enum TemplateStructureType : ushort {
+	public enum TemplateStructureType : ushort {
 
         TemplateBlockNode,
         TemplateIfStatement,
@@ -27,7 +26,7 @@ namespace EvolveUI.Parsing {
     }
 
 
-    internal enum TemplateNodeType : ushort {
+	public enum TemplateNodeType : ushort {
 
         // structural nodes -- must exactly mirror TemplateStructureType values!
         TemplateBlockNode,

@@ -2,8 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 
 namespace EvolveUI.Util {
-
-    internal struct GCHandle<T> : IDisposable where T : class {
+    public struct GCHandle<T> : IDisposable where T : class {
 
         public GCHandle handle;
 

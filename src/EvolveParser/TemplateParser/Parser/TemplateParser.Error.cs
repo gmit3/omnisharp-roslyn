@@ -5,8 +5,7 @@ using EvolveUI.Compiler;
 using EvolveUI.Util;
 
 namespace EvolveUI.Parsing {
-
-    internal unsafe ref partial struct TemplateParser {
+    public unsafe ref partial struct TemplateParser {
 
         public static string TitleCaseToDisplayString(string input, bool lowerFirstLetter = true) {
             string str = Regex.Replace(Regex.Replace(input, @"(\P{Ll})(\P{Ll}\p{Ll})", "$1 $2"), @"(\p{Ll})(\P{Ll})", "$1 $2");

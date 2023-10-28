@@ -4,8 +4,7 @@ using EvolveUI.Util;
 using EvolveUI.Util.Unsafe;
 
 namespace EvolveUI.Parsing {
-
-    internal unsafe ref partial struct TemplateParser {
+    public unsafe ref partial struct TemplateParser {
 
         public struct RuleResult {
 

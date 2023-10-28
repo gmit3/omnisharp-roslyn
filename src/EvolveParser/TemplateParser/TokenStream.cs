@@ -4,8 +4,7 @@ using EvolveUI.Util;
 using EvolveUI.Util.Unsafe;
 
 namespace EvolveUI.Parsing {
-
-    internal unsafe struct TokenStream {
+    public unsafe struct TokenStream {
 
         public int location;
         public readonly int start;
@@ -491,7 +490,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum SubStreamType {
+    public enum SubStreamType {
 
         Parens,
         CurlyBraces,

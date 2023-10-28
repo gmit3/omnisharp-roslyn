@@ -165,7 +165,7 @@ namespace EvolveUI.Util {
 
     [DebuggerTypeProxy(typeof(PodListDebugView<>))]
     [StructLayout(LayoutKind.Sequential)]
-    internal unsafe struct PodList<T> : IDisposable where T : unmanaged {
+    public unsafe struct PodList<T> : IDisposable where T : unmanaged {
 
         internal int capacity;
         public int size;

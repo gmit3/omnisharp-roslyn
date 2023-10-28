@@ -5,8 +5,7 @@ using System.Text;
 using EvolveUI.Util;
 
 namespace EvolveUI.Parsing {
-
-    internal unsafe partial struct TemplateFile : IDisposable {
+    public unsafe partial struct TemplateFile : IDisposable {
         public const int Version = 44;    
     }
 
@@ -493,8 +492,8 @@ namespace EvolveUI.Parsing {
              }
         }
     }
-    
-    internal partial interface ITemplateVisitor {
+
+    public partial interface ITemplateVisitor {
 
         void VisitTemplateBlockNode(in TemplateBlockNode node);
 
@@ -583,8 +582,8 @@ namespace EvolveUI.Parsing {
         void VisitSlotOverrideNode(in SlotOverrideNode node);
     
     }
-    
-    internal unsafe partial struct TemplateTree {
+
+    public unsafe partial struct TemplateTree {
             
         partial void VisitImpl(Action<UntypedTemplateNode> action, NodeIndex index) {
             

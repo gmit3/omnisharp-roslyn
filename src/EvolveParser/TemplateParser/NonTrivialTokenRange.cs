@@ -3,7 +3,7 @@ using System.Diagnostics;
 namespace EvolveUI.Parsing {
 
     [DebuggerDisplay("{GetDebuggerDisplay()}")]
-    internal struct NonTrivialTokenRange {
+    public struct NonTrivialTokenRange {
 
         public TokenIndex start;
         public TokenIndex end;
@@ -40,7 +40,7 @@ namespace EvolveUI.Parsing {
     }
 
     [DebuggerDisplay("{index}")]
-    internal struct NonTrivialTokenLocation {
+    public struct NonTrivialTokenLocation {
 
         public readonly int index;
 
@@ -53,7 +53,7 @@ namespace EvolveUI.Parsing {
     }
 
     [DebuggerDisplay("{index}")]
-    internal struct TokenIndex {
+    public struct TokenIndex {
 
         public readonly ushort index;
 

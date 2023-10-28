@@ -18,10 +18,10 @@ namespace EvolveUI.Parsing {
 
 #if EVOLVE_UI_DEV
     [System.Diagnostics.DebuggerDisplay("{DebugDisplay()}")]
-    internal unsafe struct Token {
+    publi unsafe struct Token {
 
 #else
-    internal struct Token {
+    public struct Token {
 #endif
 
         public TokenType tokenType;
@@ -216,7 +216,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum LiteralType {
+    public enum LiteralType {
 
         None = 0,
         UnsignedLong = 1 << 2,
@@ -249,7 +249,8 @@ namespace EvolveUI.Parsing {
         Range
 
     }
-    internal enum TokenType {
+
+    public enum TokenType {
 
         EndOfInput,
         Whitespace,
@@ -276,7 +277,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Explicit)]
-    internal struct TokenExtraData {
+    public struct TokenExtraData {
 
         [FieldOffset(0)] public TemplateKeyword keyword;
         [FieldOffset(0)] public SymbolType Symbol;

@@ -6,7 +6,7 @@ using EvolveUI.Util;
 
 namespace EvolveUI.Parsing {
 
-    internal unsafe ref partial struct TemplateParser {
+    public unsafe ref partial struct TemplateParser {
     
         private partial struct ExpressionBuffer : IDisposable {
     
@@ -1291,8 +1291,8 @@ namespace EvolveUI.Parsing {
         
         }
     }
-    
-    internal partial interface IExpressionVisitor {
+
+    public partial interface IExpressionVisitor {
 
         VisitorAction VisitBlockExpression(BlockExpression node);
 
@@ -1449,8 +1449,8 @@ namespace EvolveUI.Parsing {
         VisitorAction VisitParameter(Parameter node);
 
     }
-        
-    internal unsafe partial struct ExpressionTree {
+
+    public unsafe partial struct ExpressionTree {
             
         partial void VisitImpl(Action<UntypedExpressionNode> action, ExpressionIndex index) {
             

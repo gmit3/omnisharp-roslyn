@@ -4,8 +4,7 @@ using EvolveUI.Util;
 using EvolveUI.Util.Unsafe;
 
 namespace EvolveUI.Parsing {
-
-    internal unsafe struct SerializedTemplateFile {
+    public unsafe struct SerializedTemplateFile {
 
         public OffsetRange<long> lastWriteTime;
         public OffsetRange<bool> hasErrors;
@@ -79,7 +78,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal unsafe partial struct TemplateFile : IDisposable {
+    public unsafe partial struct TemplateFile : IDisposable {
 
         // public ModuleInfo* moduleInfo;
         public FixedCharacterSpan filePath;
@@ -248,7 +247,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum DeclarationType {
+    public enum DeclarationType {
 
         Invalid,
         Using,
@@ -262,7 +261,7 @@ namespace EvolveUI.Parsing {
     }
 
     [StructLayout(LayoutKind.Explicit)]
-    internal struct TopLevelDeclaration {
+    public struct TopLevelDeclaration {
 
         [FieldOffset(0)] public DeclarationType type;
 
@@ -276,7 +275,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct DecoratorDeclaration {
+    public struct DecoratorDeclaration {
 
         public NonTrivialTokenRange tokenRange;
         public RangeInt templateRange;
@@ -290,7 +289,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct TemplateDeclaration {
+    public struct TemplateDeclaration {
 
         public NodeRange<DecoratorNode> decorators;
         public ExpressionRange<Identifier> typeParameters;
@@ -304,7 +303,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct VariantDeclaration {
+    public struct VariantDeclaration {
 
         public NonTrivialTokenLocation identifierLocation;
         public RangeInt templateRange;
@@ -316,7 +315,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct TemplateFunctionDeclaration {
+    public struct TemplateFunctionDeclaration {
 
         public NonTrivialTokenLocation identifierLocation;
         public RangeInt templateRange;
@@ -329,7 +328,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct TypographyDeclaration {
+    public struct TypographyDeclaration {
 
         public NonTrivialTokenLocation identifierLocation;
         public NodeRange<DecoratorNode> decorators;
@@ -342,14 +341,14 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal struct UsingDeclaration {
+    public struct UsingDeclaration {
 
         public ExpressionIndex<TypeNamePart> typePath;
         public NonTrivialTokenRange tokenRange;
 
     }
 
-    internal struct ImportDeclaration {
+    public struct ImportDeclaration {
 
         public NonTrivialTokenLocation aliasName;
         public NonTrivialTokenRange importString;

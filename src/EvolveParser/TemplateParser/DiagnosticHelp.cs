@@ -5,7 +5,7 @@ using EvolveUI.Util;
 namespace EvolveUI.Compiler {
 
     [StructLayout(LayoutKind.Explicit)]
-    internal struct DiagnosticDetails {
+    public struct DiagnosticDetails {
 
         [FieldOffset(0)] public HelpType helpType;
         [FieldOffset(4)] public VariableNameAlreadyInScopeInfo variableNameAlreadyInScope;
@@ -26,13 +26,13 @@ namespace EvolveUI.Compiler {
 
     }
 
-    internal unsafe struct StyleLiteralParseError {
+    public unsafe struct StyleLiteralParseError {
 
         public FixedCharacterSpan primaryError;
 
     }
 
-    internal unsafe struct ErrorStringDesc {
+    public unsafe struct ErrorStringDesc {
 
         public FixedCharacterSpan primaryError;
         public FixedCharacterSpan help;
@@ -40,7 +40,7 @@ namespace EvolveUI.Compiler {
 
     }
 
-    internal unsafe struct DuplicateTopLevelNameDesc {
+    public unsafe struct DuplicateTopLevelNameDesc {
 
         public TemplateFile* templateFile;
         public NonTrivialTokenLocation tokenLocation;
@@ -58,47 +58,47 @@ namespace EvolveUI.Compiler {
     //
     // }
 
-    internal struct ExtrusionError {
+    public struct ExtrusionError {
 
         public int extrusionsProvided;
         public int extrusionsAvailable;
 
     }
 
-    internal struct SlotError {
+    public struct SlotError {
 
         public FixedCharacterSpan slotName;
         public SlotType slotType;
 
     }
 
-    internal struct AssetLoadError {
+    public struct AssetLoadError {
         
         public FixedCharacterSpan message;
 
     }
 
-    internal struct IdentifierError {
+    public struct IdentifierError {
 
         public FixedCharacterSpan identifier;
 
     }
 
-    internal struct MemberAccessError {
+    public struct MemberAccessError {
 
         public FixedCharacterSpan typeName;
         public FixedCharacterSpan identifier;
 
     }
 
-    internal struct FieldOrPropertyError {
+    public struct FieldOrPropertyError {
 
         public FixedCharacterSpan fieldOrPropertyName;
         public FixedCharacterSpan typeName;
 
     }
 
-    internal struct VariableNameAlreadyInScopeInfo {
+    public struct VariableNameAlreadyInScopeInfo {
 
         public FixedCharacterSpan variableName;
         public NonTrivialTokenRange locationA;
@@ -114,7 +114,7 @@ namespace EvolveUI.Compiler {
     //
     // }
 
-    internal struct DecoratorArgumentCountMismatch {
+    public struct DecoratorArgumentCountMismatch {
 
         public int minArgumentCount;
         public int maxArgumentCount;

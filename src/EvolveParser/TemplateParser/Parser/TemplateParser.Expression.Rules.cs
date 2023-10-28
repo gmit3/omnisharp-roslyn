@@ -1,6 +1,5 @@
 namespace EvolveUI.Parsing {
-
-    internal unsafe ref partial struct TemplateParser {
+    public unsafe ref partial struct TemplateParser {
 
         private RuleResult ParseExpressionRule(TokenStream tokenStream) {
             return ParseExpression(ref tokenStream, out ExpressionIndex expressionIndex) ? new RuleResult(tokenStream.location, expressionIndex) : default;

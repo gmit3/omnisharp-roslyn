@@ -3,13 +3,12 @@ using System.Diagnostics;
 using EvolveUI.Util;
 
 namespace EvolveUI.Parsing {
-
-    internal partial interface ITemplateVisitor { }
+    public partial interface ITemplateVisitor { }
 
     /// <summary>
     /// Not responsible for memory!
     /// </summary>
-    internal unsafe partial struct TemplateTree {
+    public unsafe partial struct TemplateTree {
 
         public FixedCharacterSpan source;
         public CheckedArray<Token> nonTrivialTokens;

@@ -4,8 +4,7 @@ using EvolveUI.Compiler;
 using EvolveUI.Util.Unsafe;
 
 namespace EvolveUI.Parsing {
-
-    internal ref partial struct TemplateParser {
+    public ref partial struct TemplateParser {
 
         private struct ExpressionParseState {
 

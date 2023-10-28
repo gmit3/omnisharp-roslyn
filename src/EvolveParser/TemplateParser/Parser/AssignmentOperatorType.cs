@@ -1,6 +1,6 @@
 namespace EvolveUI.Parsing {
 
-    internal enum BinaryOperatorType {
+    public enum BinaryOperatorType {
 
         Invalid,
         GreaterThanEqualTo,
@@ -30,7 +30,7 @@ namespace EvolveUI.Parsing {
 
     }
 
-    internal enum AssignmentOperatorType {
+    public enum AssignmentOperatorType {
 
         Invalid = 0,
         Assign,

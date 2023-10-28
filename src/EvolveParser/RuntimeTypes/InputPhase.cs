@@ -1,6 +1,6 @@
 namespace EvolveUI;
 
-internal enum InputPhase : byte {
+public enum InputPhase : byte {
 
     None,
     BeforeUpdate,

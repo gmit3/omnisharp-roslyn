@@ -3,8 +3,7 @@ using EvolveUI.Compiler;
 using EvolveUI.Util.Unsafe;
 
 namespace EvolveUI.Parsing {
-
-    internal partial struct TemplateParser {
+    public partial struct TemplateParser {
 
         private interface IExpressionSnippetParser {
 

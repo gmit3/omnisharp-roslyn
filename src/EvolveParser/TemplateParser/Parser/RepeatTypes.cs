@@ -1,6 +1,5 @@
 namespace EvolveUI.Parsing {
-
-    internal enum RepeatParameterName {
+    public enum RepeatParameterName {
 
         Invalid,
         KeyFn,

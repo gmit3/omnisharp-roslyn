@@ -2,8 +2,7 @@
 using EvolveUI.Util.Unsafe;
 
 namespace EvolveUI.Parsing {
-
-    internal unsafe struct OffsetRange<T> where T : unmanaged {
+    public unsafe struct OffsetRange<T> where T : unmanaged {
 
         public int offsetInBytes;
         public int countInItems;
