@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Collections;
+using System.Diagnostics;
+using System.Text;
 using EvolveUI.Compiler;
 using EvolveUI.Util;
 using EvolveUI.Util.Unsafe;
@@ -16,6 +20,9 @@ namespace EvolveUI.Parsing {
 
     }
 
+#if DEBUG
+    [DebuggerTypeProxy(typeof(TemplateParseResultDebugView))]
+#endif
     public struct TemplateParseResult {
 
 #if UNITY_64
@@ -30,6 +37,25 @@ namespace EvolveUI.Parsing {
         public UntypedTemplateNode[] templateNodes;
         public UntypedExpressionNode[] expressionNodes;
         public TopLevelDeclaration[] topLevelDeclarations;
+
+#if DEBUG
+        public string source;
+
+        internal class TemplateParseResultDebugView
+        {
+            public TemplateParseResult result;
+            public TemplateParseResultDebugView(TemplateParseResult result)
+            {
+                this.result = result;
+            }
+
+            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+//             public string[] tokens => result.nonTrivialTokens.Select((t) =>
+//                 $"({t.charIndex}-{t.charIndex + t.length}): {result.source.Substring(t.charIndex, t.length)}").ToArray();
+            public string[] tokens => result.nonTrivialTokens.Select((t) =>
+                result.source.Substring(t.charIndex, t.length)).ToArray();
+        }
+#endif
 
     }
 
@@ -76,6 +102,10 @@ namespace EvolveUI.Parsing {
 
         private TemplateParseResult GetParseResult(string filePath, FixedCharacterSpan source, CheckedArray<Token> tokens, PodList<Token> nonTrivialTokens) {
             TemplateParseResult result = new TemplateParseResult();
+
+#if DEBUG
+            result.source = source.ToString();
+#endif
 
             if (hardErrorStack.Count == 0) {
                 result.topLevelDeclarations = declarationList.ToArray();

@@ -104,7 +104,7 @@ namespace EvolveUI.Parsing {
             VisitImpl(nodeFn, nodeIndex);
         }
 
-        private void VisitRange(Action<UntypedTemplateNode> action, int start, int length) {
+        public void VisitRange(Action<UntypedTemplateNode> action, int start, int length) {
             for (int i = start; i < start + length; i++) {
                 VisitImpl(action, ranges[i]);
             }

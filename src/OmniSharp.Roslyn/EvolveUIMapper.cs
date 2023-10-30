@@ -236,6 +236,11 @@ namespace OmniSharp.Roslyn
             }
         }
 
+        public Chunk Replace((int, int) what, string with)
+        {
+            return Replace(new TextSpan(what.Item1, what.Item2 - what.Item1), with);
+        }
+
         public int Replace(string string_beginning, string with, string string_ending = null, int repeat_count = 1)
         {
             int replaces = 0, i = 0;
